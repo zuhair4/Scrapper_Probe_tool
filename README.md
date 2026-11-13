@@ -1,5 +1,6 @@
 # MCP Toolkit
 
+
 A browser app plus a small local API server, with three tools in one shell:
 
 - **Claude Directory Scraper** (`/claude`): pages Anthropic's public connector directory, classifies each entry, exports CSV, builds a report.
