@@ -1,16 +1,22 @@
 import { PsHttpError } from './pluginStore';
 
 // The page's calls, made through the app's own backend (backend/src/chatgpt/pluginStoreRouter.ts), which makes the
-// request to chatgpt.com. Errors carry the backend's explanation (blocked, rate-limited).
+// request to chatgpt.com. Errors carry the exact status code and the backend's explanation (blocked, rate-limited, etc).
 
 async function request(url: string, init?: RequestInit): Promise<unknown> {
+  const method = init?.method?.toUpperCase() || 'GET';
   let res: Response;
   try {
     res = await fetch(url, init);
-  } catch {
-    if (init?.signal?.aborted) throw new PsHttpError(0, 'Stopped.');
-    throw new PsHttpError(0, 'Can’t reach the app’s backend. Start it with npm run dev.');
+  } catch (err) {
+    if (init?.signal?.aborted) {
+      throw new PsHttpError(0, 'Request was stopped / cancelled.', { method, url, cause: err });
+    }
+    const causeMsg = err instanceof Error ? err.message : String(err);
+    const fullMsg = `[Network Error (HTTP 0)] ${method} ${url} failed: ${causeMsg}. Make sure the backend server is running and accessible.`;
+    throw new PsHttpError(0, fullMsg, { method, url, details: causeMsg, cause: err });
   }
+
   const text = await res.text();
   let body: unknown = null;
   try {
@@ -18,10 +24,23 @@ async function request(url: string, init?: RequestInit): Promise<unknown> {
   } catch {
     // not JSON
   }
+
   if (!res.ok) {
-    const msg = (body as { error?: string } | null)?.error;
-    throw new PsHttpError(res.status, msg ?? `Backend answered HTTP ${res.status}. Is it running the latest code (npm run dev)?`);
+    const errorObj = body as { error?: string; details?: unknown; upstreamStatus?: number } | null;
+    let detailMsg = errorObj?.error;
+    if (!detailMsg) {
+      // If server returned HTML (e.g. 502/504 Bad Gateway from Vite proxy or reverse proxy) or plain text:
+      const cleanSnippet = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200);
+      detailMsg = cleanSnippet || res.statusText || 'Unknown server error';
+    }
+    const upstreamNote = errorObj?.upstreamStatus ? ` (upstream chatgpt.com returned HTTP ${errorObj.upstreamStatus})` : '';
+    const detailsStr = errorObj?.details
+      ? ` | Details: ${typeof errorObj.details === 'object' ? JSON.stringify(errorObj.details) : String(errorObj.details)}`
+      : '';
+    const fullMsg = `[HTTP ${res.status}] ${method} ${url} - ${detailMsg}${upstreamNote}${detailsStr}`;
+    throw new PsHttpError(res.status, fullMsg, { method, url, details: body || text });
   }
+
   return body;
 }
 

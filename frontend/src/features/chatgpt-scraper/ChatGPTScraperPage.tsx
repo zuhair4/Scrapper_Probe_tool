@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { backendApi } from './chatgptApi';
 import { MCP_STATUS_LABEL, MCP_STATUS_ORDER, PsHttpError, applyDetail, buildMcpEndpointsCsv, buildPsCsv, ingestHome, ingestImported, probeLinesOf } from './pluginStore';
 import type { McpStatus, PsCategory, PsPlugin } from './pluginStore';
@@ -40,7 +40,18 @@ const BATCH = 50; // plugin ids per backend call; the backend fetches a few at a
 const PER_SECOND = 8; // the backend starts at most 8 requests a second, however many batches are in flight
 const PARALLEL_BATCHES = 5; // batches in flight at once
 const CAT_CONCURRENCY = 4; // categories fetched in parallel during live fetch
-const errMsg = (e: unknown) => (e instanceof Error ? e.message : String(e));
+const errMsg = (e: unknown): string => {
+  if (e instanceof PsHttpError) {
+    if (e.message.startsWith('[HTTP') || e.message.startsWith('[Network Error')) {
+      return e.message;
+    }
+    const codeTag = e.status === 0 ? '[Network Error (HTTP 0)]' : `[HTTP ${e.status}]`;
+    const target = e.method && e.url ? ` ${e.method} ${e.url} -` : '';
+    return `${codeTag}${target} ${e.message}`;
+  }
+  if (e instanceof Error) return e.message;
+  return String(e);
+};
 
 function download(name: string, text: string, type: string) {
   const blob = new Blob([type.startsWith('text/csv') ? String.fromCharCode(0xfeff) + text : text], { type });
@@ -143,13 +154,27 @@ export default function ChatGPTScraperPage({ active, onSendToProbe }: { active: 
       try {
         res = await backendApi.detailBatch(ids, abortRef.current.signal);
       } catch (e) {
-        if (stopRef.current) return; // stopped: that batch is dropped and its plugins stay without details
-        throw e;
+        if (stopRef.current || abortRef.current.signal.aborted) return;
+        const errDescription = errMsg(e);
+        addLog('warn', `Batch (${ids.length} plugins) failed: ${errDescription}. Retrying batch once...`);
+        // Retry once after 1s backoff
+        await new Promise((r) => setTimeout(r, 1000));
+        if (stopRef.current || abortRef.current.signal.aborted) return;
+        try {
+          res = await backendApi.detailBatch(ids, abortRef.current.signal);
+        } catch (retryErr) {
+          if (stopRef.current || abortRef.current.signal.aborted) return;
+          console.error('[batch error]', retryErr);
+          throw retryErr;
+        }
       }
       const { results, blocked } = res;
       for (const r of results) {
         if (r.status === 200) applyDetail(store.current, r.id, r.data);
-        else if (r.status !== 0) failed.push(r.id);
+        else if (r.status !== 0) {
+          failed.push(r.id);
+          addLog('warn', `Plugin ${r.id} details failed: [HTTP ${r.status}] ${r.error || 'Unknown error'}`);
+        }
       }
       if (blocked) throw new Error(blocked);
     };
@@ -703,7 +728,28 @@ export default function ChatGPTScraperPage({ active, onSendToProbe }: { active: 
         />
       )}
 
-      {error && <div className="mt-4 max-w-3xl break-words rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+      {error && (
+        <div className="mt-4 max-w-4xl break-words rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800 shadow-sm">
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 inline-flex items-center rounded-md bg-red-200 px-2 py-0.5 font-mono text-xs font-bold text-red-900">
+              {error.match(/\[(.*?)\]/)?.[1] || 'API Error'}
+            </span>
+            <div className="flex-1 space-y-1">
+              <p className="font-semibold text-red-900">{error}</p>
+              <p className="text-xs text-red-600">
+                See the Activity Log below or browser developer console (Network tab) for the full request trace.
+              </p>
+            </div>
+            <button
+              onClick={() => void navigator.clipboard.writeText(error)}
+              className="ml-auto shrink-0 inline-flex items-center rounded border border-red-300 bg-white px-2.5 py-1 text-xs font-medium text-red-700 hover:bg-red-50"
+              title="Copy error to clipboard"
+            >
+              Copy
+            </button>
+          </div>
+        </div>
+      )}
 
       {!cats.length ? (
         <>

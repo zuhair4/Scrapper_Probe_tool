@@ -103,12 +103,25 @@ if (frontendDir) {
   app.use(express.static(frontendDir));
   app.get('*', (req, res) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/proxy')) {
-      res.status(404).json({ error: 'Not found' });
+      res.status(404).json({ error: 'Not found', status: 404, url: req.url });
       return;
     }
     res.sendFile(path.join(frontendDir, 'index.html'));
   });
 }
+
+// Global error handler: ensures any server crash or unhandled error returns formatted JSON with status code
+app.use((err: unknown, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  const status = (err as { status?: number; statusCode?: number })?.status || (err as { status?: number; statusCode?: number })?.statusCode || 500;
+  const msg = err instanceof Error ? err.message : String(err);
+  console.error(`[Server Error ${status}] ${req.method} ${req.url}:`, msg);
+  res.status(status).json({
+    error: msg,
+    status,
+    method: req.method,
+    url: req.url,
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`MCP Auth Discovery Probe server on http://localhost:${PORT}`);

@@ -200,39 +200,45 @@ export function chatgptRouter(upstream: UpstreamFetch = fetchUpstream, gapMs = M
   }
 
   r.post('/plugins/batch', express.json({ limit: '100kb' }), async (req, res) => {
-    const ids = (req.body as { ids?: unknown } | null)?.ids;
-    if (!Array.isArray(ids) || ids.length === 0 || ids.length > BATCH_MAX || !ids.every((i) => typeof i === 'string' && SLUG.test(i))) {
-      res.status(400).json({ error: `Expected { ids: [1 to ${BATCH_MAX} plugin ids] }` });
-      return;
-    }
-    const results: BatchItem[] = ids.map((id) => ({ id: id as string, status: 0 }));
-    let blocked = null as string | null;
-    let next = 0;
-    const worker = async () => {
-      while (!blocked) {
-        const i = next++;
-        if (i >= ids.length) return;
-        const id = ids[i] as string;
-        try {
-          const up = await paced(() => upstream(`${BASE}/plugins/${encodeURIComponent(id)}`, 'other'));
-          if (up.status === 200) {
-            try {
-              results[i] = { id, status: 200, data: JSON.parse(up.text) };
-            } catch {
-              results[i] = { id, status: 502, error: 'Answer was not JSON' };
-            }
-          } else {
-            results[i] = { id, status: up.status, error: describeFailure(up.status, up.text) };
-            // Refused or rate-limited: stop the whole batch, do not keep asking.
-            if (up.status === 401 || up.status === 403 || up.status === 429) blocked = describeFailure(up.status, up.text);
-          }
-        } catch (e) {
-          results[i] = { id, status: 502, error: e instanceof Error ? e.message : String(e) };
-        }
+    try {
+      const ids = (req.body as { ids?: unknown } | null)?.ids;
+      if (!Array.isArray(ids) || ids.length === 0 || ids.length > BATCH_MAX || !ids.every((i) => typeof i === 'string' && SLUG.test(i))) {
+        res.status(400).json({ error: `Expected { ids: [1 to ${BATCH_MAX} plugin ids] }` });
+        return;
       }
-    };
-    await Promise.all(Array.from({ length: Math.min(BATCH_CONCURRENCY, ids.length) }, worker));
-    res.json({ results, blocked });
+      const results: BatchItem[] = ids.map((id) => ({ id: id as string, status: 0 }));
+      let blocked = null as string | null;
+      let next = 0;
+      const worker = async () => {
+        while (!blocked) {
+          const i = next++;
+          if (i >= ids.length) return;
+          const id = ids[i] as string;
+          try {
+            const up = await paced(() => upstream(`${BASE}/plugins/${encodeURIComponent(id)}`, 'other'));
+            if (up.status === 200) {
+              try {
+                results[i] = { id, status: 200, data: JSON.parse(up.text) };
+              } catch {
+                results[i] = { id, status: 502, error: 'Answer was not JSON' };
+              }
+            } else {
+              results[i] = { id, status: up.status, error: describeFailure(up.status, up.text) };
+              // Refused or rate-limited: stop the whole batch, do not keep asking.
+              if (up.status === 401 || up.status === 403 || up.status === 429) blocked = describeFailure(up.status, up.text);
+            }
+          } catch (e) {
+            results[i] = { id, status: 502, error: e instanceof Error ? e.message : String(e) };
+          }
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(BATCH_CONCURRENCY, ids.length) }, worker));
+      res.json({ results, blocked });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('[batch error]', msg);
+      res.status(500).json({ error: `Internal error in plugins batch proxy: ${msg}` });
+    }
   });
 
   return r;

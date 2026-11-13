@@ -86,11 +86,13 @@ const makeProxyFetcher = (signal: AbortSignal): Fetcher => async (req) => {
       signal,
     });
     if (!res.ok) {
-      return errorResponse(`Probe server error ${res.status}: ${(await res.text()).slice(0, 300)}`);
+      const errText = (await res.text()).slice(0, 300);
+      return errorResponse(`[HTTP ${res.status}] POST /api/probe error: ${errText || res.statusText}`);
     }
     return (await res.json()) as ProbeResponse;
   } catch (e) {
-    return errorResponse(`Cannot reach probe server: ${e instanceof Error ? e.message : String(e)}`);
+    const msg = e instanceof Error ? e.message : String(e);
+    return errorResponse(`[Network Error (HTTP 0)] POST /api/probe failed: ${msg}. Make sure the backend server is running.`);
   }
 };
 

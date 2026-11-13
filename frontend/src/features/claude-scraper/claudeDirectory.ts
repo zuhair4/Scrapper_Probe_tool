@@ -179,7 +179,7 @@ export function fmtDateTime(t?: string | null): string {
 export const isHttp = (u: unknown): u is string => typeof u === 'string' && /^https?:\/\//i.test(u);
 export const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
-// Retries network errors, 429 and 5xx forever with capped backoff; Stop is the escape hatch.
+// Retries network errors, 429 and 5xx up to 5 times with capped backoff; Stop is the escape hatch.
 export async function fetchPage(
   params: URLSearchParams,
   stopRef: { current: boolean }
@@ -191,10 +191,14 @@ export async function fetchPage(
       const res = await fetch(`${PROXY_BASE}?${params}`);
       if (res.ok) return (await res.json()) as Item;
       if (res.status !== 429 && res.status < 500) {
-        throw new Error(`HTTP ${res.status} — ${res.statusText}`);
+        throw new Error(`[HTTP ${res.status}] GET ${PROXY_BASE} — ${res.statusText || 'Error fetching Claude directory'}`);
       }
     } catch (e) {
-      if (e instanceof Error && e.message.startsWith('HTTP ')) throw e;
+      if (e instanceof Error && e.message.startsWith('[HTTP ')) throw e;
+      if (attempt >= 5) {
+        const msg = e instanceof Error ? e.message : String(e);
+        throw new Error(`[Network Error (HTTP 0)] GET ${PROXY_BASE} failed after 5 retries: ${msg}. Make sure the backend server is running.`);
+      }
     }
     await sleep(Math.min(30000, 1000 * 2 ** Math.min(attempt, 5)));
     attempt++;

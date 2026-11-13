@@ -678,10 +678,24 @@ ${i.publisher?.name ?? ''}`.toLowerCase());
       )}
 
       {error && (
-        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          <div>Error: {error}</div>
-          <div className="mt-1 text-xs">
-            Make sure the Vite dev server is running (<code>npm run dev</code>) for the proxy to work.
+        <div className="mt-4 max-w-4xl break-words rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800 shadow-sm">
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 inline-flex items-center rounded-md bg-red-200 px-2 py-0.5 font-mono text-xs font-bold text-red-900">
+              {error.match(/\[(.*?)\]/)?.[1] || 'API Error'}
+            </span>
+            <div className="flex-1 space-y-1">
+              <p className="font-semibold text-red-900">{error}</p>
+              <div className="text-xs text-red-600">
+                Make sure the backend server is running and accessible.
+              </div>
+            </div>
+            <button
+              onClick={() => void navigator.clipboard.writeText(error)}
+              className="ml-auto shrink-0 inline-flex items-center rounded border border-red-300 bg-white px-2.5 py-1 text-xs font-medium text-red-700 hover:bg-red-50"
+              title="Copy error to clipboard"
+            >
+              Copy
+            </button>
           </div>
         </div>
       )}

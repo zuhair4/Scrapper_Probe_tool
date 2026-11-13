@@ -489,9 +489,20 @@ export function ingestImported(into: Map<string, PsPlugin>, json: unknown, fileN
 }
 
 export class PsHttpError extends Error {
-  constructor(public status: number, message: string) {
-    super(message);
+  public method?: string;
+  public url?: string;
+  public details?: unknown;
+
+  constructor(
+    public status: number,
+    message: string,
+    options?: { method?: string; url?: string; details?: unknown; cause?: unknown }
+  ) {
+    super(message, { cause: options?.cause });
     this.name = 'PsHttpError';
+    this.method = options?.method;
+    this.url = options?.url;
+    this.details = options?.details;
   }
 }
 
