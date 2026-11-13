@@ -37,6 +37,10 @@ app.get('/proxy/*', async (req, res) => {
     const upstreamPath = req.originalUrl.replace(/^\/proxy/, '');
     const upstreamUrl = new URL(upstreamPath, 'https://api.anthropic.com');
 
+    // Remove any query parameters injected by serverless hosts/proxies (e.g. Vercel named rewrites: ?path=...)
+    upstreamUrl.searchParams.delete('path');
+    upstreamUrl.searchParams.delete('match');
+
     // Only allow proxying to the Anthropic directory API
     if (!upstreamUrl.pathname.startsWith('/api/directory/plugins')) {
       res.status(403).json({ error: 'Proxy access restricted to Claude directory API' });

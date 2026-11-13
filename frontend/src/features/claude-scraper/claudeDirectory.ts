@@ -191,7 +191,26 @@ export async function fetchPage(
       const res = await fetch(`${PROXY_BASE}?${params}`);
       if (res.ok) return (await res.json()) as Item;
       if (res.status !== 429 && res.status < 500) {
-        throw new Error(`[HTTP ${res.status}] GET ${PROXY_BASE} — ${res.statusText || 'Error fetching Claude directory'}`);
+        let errDetail = '';
+        try {
+          const json = await res.json();
+          errDetail = json?.error?.message || json?.error || (typeof json === 'object' ? JSON.stringify(json) : String(json));
+        } catch {
+          errDetail = (await res.text().catch(() => '')).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200);
+        }
+        const msg = errDetail ? ` — ${errDetail}` : (res.statusText ? ` — ${res.statusText}` : '');
+        throw new Error(`[HTTP ${res.status}] GET ${PROXY_BASE}${msg}`);
+      }
+      if (attempt >= 5) {
+        let errDetail = '';
+        try {
+          const json = await res.json();
+          errDetail = json?.error?.message || json?.error || String(json);
+        } catch {
+          errDetail = (await res.text().catch(() => '')).slice(0, 200);
+        }
+        const msg = errDetail ? ` — ${errDetail}` : (res.statusText ? ` — ${res.statusText}` : '');
+        throw new Error(`[HTTP ${res.status}] GET ${PROXY_BASE} failed after 5 retries${msg}`);
       }
     } catch (e) {
       if (e instanceof Error && e.message.startsWith('[HTTP ')) throw e;
