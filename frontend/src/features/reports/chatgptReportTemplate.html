@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ChatGPT plugin directory: MCP endpoints and categories</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FA;--surface:#FFFFFF;--ink:#101828;--ink2:#475467;--ink3:#7A8499;--line:#E1E7F0;--grid:#E9EDF4;--track:#EDF1F7;
+  --accent:#4263EB;--community:#4263EB;--partner:#F59F00;--anthropic:#12B886;--warn:#F59F00;--shadow:0 1px 2px rgba(16,24,40,.04);
+  --heat:66,99,235;--on-heat:#FFFFFF;--none:#98A2B3;--nf:#CBD2DE;
+  
+  color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C111B;--surface:#141B29;--ink:#EEF2F8;--ink2:#A7B1C4;--ink3:#7B879D;--line:#243048;--grid:#1E283B;--track:#1B2436;
+    --accent:#7C93FF;--community:#7C93FF;--partner:#FFB627;--anthropic:#3DDBA9;--warn:#FFB627;--heat:124,147,255;--on-heat:#0C111B;--shadow:none;--none:#7B879D;--nf:#334158;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C111B;--surface:#141B29;--ink:#EEF2F8;--ink2:#A7B1C4;--ink3:#7B879D;--line:#243048;--grid:#1E283B;--track:#1B2436;
+  --accent:#7C93FF;--community:#7C93FF;--partner:#FFB627;--anthropic:#3DDBA9;--warn:#FFB627;--heat:124,147,255;--on-heat:#0C111B;--shadow:none;--none:#7B879D;--nf:#334158;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 24px 72px}
+h1,h2,h3{font-family:"Bricolage Grotesque","Figtree",system-ui,sans-serif;font-weight:700;letter-spacing:-.02em;margin:0}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.06;max-width:18ch}
+.sub{color:var(--ink3);font-size:14px;margin:14px 0 0}
+.lede{font-size:clamp(17px,2vw,20px);line-height:1.5;color:var(--ink2);max-width:62ch;margin:20px 0 0}
+.lede b{color:var(--ink);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:36px 0 0}
+.kpi{background:var(--surface);padding:20px 22px}
+.kpi .n{font-family:"Bricolage Grotesque","Figtree",sans-serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);letter-spacing:-.02em;line-height:1.05}
+.kpi .l{font-weight:600;font-size:14px;margin-top:8px}
+.kpi .d{color:var(--ink3);font-size:13px;margin-top:4px}
+section{margin-top:56px}
+.head{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:6px}
+h2{font-size:clamp(21px,2.6vw,28px);line-height:1.18;max-width:34ch}
+.note{color:var(--ink2);font-size:15px;margin:8px 0 18px;max-width:70ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 20px 14px;box-shadow:var(--shadow)}
+.seg{display:inline-flex;background:var(--track);border-radius:10px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:13.5px;font-weight:500;color:var(--ink2);background:transparent;border:0;border-radius:8px;padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.seg button:focus-visible,.row:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink2);margin:0 0 6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:"Figtree",system-ui,sans-serif;fill:var(--ink3);font-size:12px}
+svg .v{fill:var(--ink);font-weight:600}
+.banner{border:1px solid var(--warn);background:color-mix(in srgb,var(--warn) 10%,transparent);border-radius:12px;padding:14px 18px;margin:28px 0 0;font-size:15px;color:var(--ink)}
+.banner b{font-weight:600}
+/* ranking */
+.rank{display:flex;flex-direction:column;gap:2px}
+.row{display:grid;grid-template-columns:250px 1fr 120px;align-items:center;gap:12px;padding:7px 8px;border-radius:8px;cursor:default}
+.row:hover{background:var(--track)}
+.row .nm{font-size:14.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .tr{height:14px;background:var(--track);border-radius:7px;overflow:hidden}
+.row:hover .tr{background:var(--surface)}
+.row .bars{display:flex;height:100%}
+.row .fl{height:100%;transition:width .35s ease}
+.row .nmb{text-align:right;font-size:14px;font-weight:600}
+.row .nmb span{color:var(--ink3);font-weight:400;margin-left:6px}
+.morebtn{font:inherit;font-size:14px;font-weight:500;color:var(--ink2);background:var(--track);border:0;border-radius:9px;padding:8px 14px;margin:10px 0 4px 8px;cursor:pointer}
+/* heatmap */
+.hm{overflow-x:auto}
+.hm table{border-collapse:separate;border-spacing:3px;width:100%;min-width:640px}
+.hm th{font-size:12.5px;font-weight:600;color:var(--ink2);padding:4px 6px;text-align:center;vertical-align:bottom}
+.hm td.rl{font-size:14px;font-weight:500;padding:0 10px 0 0;white-space:nowrap;width:250px;max-width:250px;overflow:hidden;text-overflow:ellipsis}
+.hm td.c{text-align:center;font-size:13px;font-weight:600;height:34px;border-radius:7px;background:rgba(var(--heat),var(--a));color:var(--ink)}
+.hm td.c.hi{color:var(--on-heat)}
+.hm td.c.z{background:var(--track);color:var(--ink3);font-weight:400}
+/* table */
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 12px;align-items:center}
+.filters input,.filters select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+.filters input{min-width:260px}
+.filters input:focus-visible,.filters select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tw{max-height:620px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.tw table{width:100%;border-collapse:collapse;font-size:14px;min-width:900px}
+.tw th{position:sticky;top:0;background:var(--surface);text-align:left;font-size:12.5px;color:var(--ink3);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line)}
+.tw td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tw td.u{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;color:var(--ink2);word-break:break-all;max-width:340px}
+.tw td .dev{color:var(--ink3);font-size:12.5px}
+.tw a{color:var(--accent);text-decoration:none}.tw a:hover{text-decoration:underline}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--track);color:var(--ink);white-space:nowrap}
+.pill i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.tcat{display:inline-block;font-size:12px;padding:1px 7px;border-radius:99px;background:rgba(var(--heat),.14);margin:0 4px 3px 0;white-space:nowrap}
+.cnt{color:var(--ink3);font-size:13px;margin:0 0 10px}
+.info{position:relative;display:inline-flex;flex:none;width:16px;height:16px;margin-left:6px;vertical-align:middle;top:-1px;border-radius:50%;color:var(--ink3);cursor:help;transition:color .15s,background-color .15s}
+.info svg{display:block;width:100%;height:100%}
+.info:hover,.info:focus{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);outline:0}
+.info:focus-visible{box-shadow:0 0 0 2px var(--accent)}
+h2 .info{width:18px;height:18px;margin-left:8px;top:-2px}
+.seg button .info{width:14px;height:14px;margin-left:4px;top:-1px}
+.info::after,.info::before{position:absolute;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s,transform .15s;transform:translateY(-4px);z-index:30}
+.info::after{content:attr(data-help);top:calc(100% + 11px);left:-10px;width:min(320px,80vw);padding:11px 13px;border-radius:10px;background:var(--ink);color:var(--surface);font-family:"Figtree",system-ui,sans-serif;font-size:13px;font-weight:400;font-style:normal;letter-spacing:normal;line-height:1.5;text-align:left;white-space:pre-line;box-shadow:0 8px 24px rgba(16,24,40,.28)}
+.info::before{content:"";top:calc(100% + 5px);left:50%;margin-left:-6px;width:12px;height:12px;background:var(--ink);border-radius:2px;rotate:45deg}
+.info.r::after{left:auto;right:-10px}
+.info:hover::after,.info:hover::before,.info:focus::after,.info:focus::before{opacity:1;visibility:visible;transform:none}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);padding:9px 12px;border-radius:9px;font-size:13px;line-height:1.45;max-width:300px;opacity:0;transition:opacity .08s}
+#tip b{font-weight:600}#tip .m{opacity:.7}
+.toolbar{display:flex;justify-content:flex-end;margin:-16px 0 14px}
+.dlbtn{font:inherit;font-size:14px;font-weight:600;color:var(--bg);background:var(--ink);border:0;border-radius:9px;padding:9px 16px;cursor:pointer}
+.dlbtn:hover{opacity:.88}.dlbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+.tabs{display:flex;gap:6px;margin:36px 0 0;border-bottom:1px solid var(--line)}
+.tabs button{font:inherit;font-size:15px;font-weight:600;color:var(--ink2);background:transparent;border:0;border-bottom:3px solid transparent;padding:10px 16px;margin-bottom:-1px;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.ctr{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tt-wrap{overflow-x:auto}
+.tt{width:100%;border-collapse:collapse;min-width:640px;font-size:15px}
+.tt th{text-align:right;font-size:13px;font-weight:600;color:var(--ink2);padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:bottom;white-space:nowrap}
+.tt th:first-child,.tt td:first-child{text-align:left}
+.tt th i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.tt td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.tt td b{font-weight:600}.tt td span{color:var(--ink3);font-size:12.5px;margin-left:7px}
+.tt tr.zero td{color:var(--ink3);font-style:italic}
+.tt tr:hover td{background:var(--track)}
+.tt tfoot td{font-weight:700;border-top:2px solid var(--line);border-bottom:0}
+.tt td.big b{font-size:16px}
+@media print{.toolbar,.filters,.tabs{display:none}}
+@media (max-width:860px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .row{grid-template-columns:1fr 110px;grid-template-areas:"nm nmb" "tr tr";gap:4px 12px}
+  .row .nm{grid-area:nm}.row .tr{grid-area:tr}.row .nmb{grid-area:nmb}
+  .hm td.rl{width:160px;max-width:160px;white-space:normal;font-size:13px}
+}
+@media (max-width:520px){.wrap{padding:28px 16px 56px}.panel{padding:16px 12px 10px}.filters input{min-width:0;width:100%}}
+@media (prefers-reduced-motion:reduce){.row .fl{transition:none}}
+</style>
+</head><body>
+<div class="wrap">
+  <div class="toolbar"><button id="dl" type="button" class="dlbtn">Download report</button></div>
+  <header>
+    <h1>ChatGPT plugin directory: MCP endpoints and categories</h1>
+    <p class="lede" id="lede"></p>
+  </header>
+  <div class="kpis" id="kpis"></div>
+  <div class="banner" id="banner" hidden></div>
+  <div class="tabs" role="tablist" aria-label="Dashboard views">
+    <button role="tab" id="tab-btn-main" data-tab="main" aria-selected="true">Launch pace and categories</button>
+    <button role="tab" id="tab-btn-cmp" data-tab="cmp" aria-selected="false">Endpoint comparison by month</button>
+    <button role="tab" id="tab-btn-table" data-tab="table" aria-selected="false">All plugins</button>
+  </div>
+  <div id="tab-main" role="tabpanel" aria-labelledby="tab-btn-main">
+
+  <section id="s-month" hidden>
+    <div class="head"><h2 id="h-month"><span id="h-month-t">Monthly launches</span></h2>
+      <div class="seg" role="group" aria-label="Monthly chart view" id="seg-month"><button aria-pressed="true" data-v="group">By endpoint group</button><button aria-pressed="false" data-v="total">Total</button></div></div>
+    <p class="note" id="n-month"></p>
+    <div class="panel"><div class="legend" id="lg-month"></div><div id="c-month"></div></div>
+  </section>
+
+  <section id="s-day" hidden>
+    <div class="head"><h2 id="h-day"></h2></div>
+    <div class="panel"><div id="c-day"></div></div>
+  </section>
+
+  <section>
+    <div class="head"><h2 id="h-status">Which plugins publish an MCP endpoint</h2></div>
+    <p class="note" id="n-status"></p>
+    <div class="panel"><div id="c-status-bar"></div></div>
+  </section>
+
+  <div class="banner" id="banner-cat" style="margin-top:56px">
+    <b>How categories work below.</b> Each plugin is listed under the categories the directory gives it, so one plugin can count in several. Plugins with no category are left out of the category charts.
+  </div>
+
+  <section style="margin-top:32px">
+    <div class="head"><h2 id="h-cat">Category Breakdown of Plugin Listings</h2>
+      <div class="ctr"><div class="seg" role="group" aria-label="Category values" id="seg-cat"><button aria-pressed="true" data-v="count">Plugin count</button><button aria-pressed="false" data-v="share">Remote endpoint share</button></div></div></div>
+    <p class="note" id="n-cat"></p>
+    <div class="panel"><div class="legend" id="lg-cat"></div><div class="rank wide" id="c-cat"></div><div id="more-cat"></div></div>
+  </section>
+
+  <section>
+    <div class="head"><h2 id="h-hm">Which categories publish which kind of endpoint</h2>
+      <div class="ctr"><div class="seg" role="group" aria-label="Heatmap values" id="seg-hm"><button aria-pressed="true" data-v="share">Share of category</button><button aria-pressed="false" data-v="count">Plugin count</button></div></div></div>
+    <p class="note" id="n-hm"></p>
+    <div class="panel"><div class="hm" id="c-hm"></div></div>
+  </section>
+
+</div>
+<div id="tab-cmp" hidden role="tabpanel" aria-labelledby="tab-btn-cmp">
+  <section style="margin-top:40px">
+    <div class="head"><h2 id="h-cmp"></h2></div>
+    <p class="note" id="n-cmp"></p>
+    <div class="panel"><div class="tt-wrap" id="c-cmp"></div></div>
+  </section>
+</div>
+<div id="tab-table" hidden role="tabpanel" aria-labelledby="tab-btn-table">
+  <section style="margin-top:40px">
+    <div class="head"><h2 id="h-all">All plugins</h2></div>
+    <div class="filters">
+      <input type="search" id="f-q" placeholder="Search name, developer or endpoint" aria-label="Search plugins">
+      <select id="f-cat" aria-label="Category"></select>
+      <select id="f-st" aria-label="MCP endpoint group"></select>
+    </div>
+    <p class="cnt" id="f-cnt"></p>
+    <div class="tw"><table><thead><tr><th>Plugin</th><th>Categories</th><th>MCP endpoint</th><th>Endpoint</th></tr></thead><tbody id="c-tbl"></tbody></table></div>
+  </section>
+</div>
+
+</div>
+<div id="tip" role="tooltip"></div>
+<script>
+const D = /*__REPORT_DATA__*/null;
+const $ = s => document.querySelector(s);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+const info = text => `<span class="info" tabindex="0" role="img" aria-label="${esc(text)}" data-help="${esc(text)}"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="4.9" r="1" fill="currentColor"/><path d="M8 7.3v4.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg></span>`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const mlabel = m => MN[+m.slice(5,7)-1] + ' ’' + m.slice(2,4);
+
+const SLAB = D.statusLabels;
+/* The eight detailed statuses are shown as four groups. The detailed reasons stay in the tooltips. */
+const GROUPS = [
+  {k: 'remote', label: 'Remote MCP Endpoints', color: 'var(--community)', from: ['remote']},
+  {k: 'local', label: 'Local MCP Endpoints', color: 'var(--partner)', from: ['local-only']},
+  {k: 'unavailable', label: 'MCP Endpoints unavailable', color: 'var(--anthropic)', from: ['app-unpublished', 'connector', 'skills-only', 'none', 'unrecognised']},
+  {k: 'nodetails', label: 'Details unavailable', color: 'var(--nf)', from: ['not-fetched']}
+];
+const GBY = Object.fromEntries(GROUPS.map(g => [g.k, g]));
+const GOF = {}; GROUPS.forEach(g => g.from.forEach(s => GOF[s] = g.k));
+const gSum = (counts, g) => g.from.reduce((a, s) => a + (counts[s] || 0), 0);
+const SHORT = {'app-unpublished': 'Apps', connector: 'Connectors', 'skills-only': 'Skills only', none: 'No server', unrecognised: 'Unrecognised format'};
+/* "Apps 4,112 · Connectors 27 · …" for a group made of several reasons, or '' */
+const why = (counts, g) => g.from.length > 1 ? g.from.filter(s => counts[s]).map(s => `${SHORT[s]} ${fmt(counts[s])}`).join(' · ') : '';
+const noDetail = D.total - D.withDetail;
+const topCat = D.categories[0];
+
+const TIPS = {
+  cats: `A plugin can be listed under more than one category, so the category counts add up to more than the number of plugins.`
+};
+
+/* ---------- header ---------- */
+{
+  $('#lede').innerHTML = D.total === 0 ? 'This scrape has no plugins.' :
+    `Of the <b>${fmt(D.withDetail)} plugins</b> whose details were read, <b>${fmt(D.remotePlugins)} (${pct(D.remotePlugins, D.withDetail)}%)</b> publish a remote MCP endpoint, <b>${fmt(D.distinctUrls)}</b> distinct URLs in all.` +
+    (topCat ? ` ${esc(topCat.title)} is the largest category with <b>${fmt(topCat.total)}</b> plugins.` : '');
+}
+$('#kpis').innerHTML = [
+  [fmt(D.total), 'Plugins', `${fmt(D.categories.length)} categories · ${fmt(D.developerCount)} developers`],
+  [fmt(D.remotePlugins), 'With a remote MCP endpoint', `${pct(D.remotePlugins, D.withDetail)}% of the ${fmt(D.withDetail)} with details`],
+  [fmt(D.distinctUrls), 'Distinct endpoint URLs', `${fmt(D.remoteServers)} remote server entries · ${fmt(D.localServers)} local commands`],
+  [fmt(gSum(D.status, GBY.unavailable)), 'Without a published endpoint', `${pct(gSum(D.status, GBY.unavailable), D.total)}% of all plugins`]
+].map(([n, l, d]) => `<div class="kpi"><div class="n">${n}</div><div class="l">${l}</div><div class="d">${d}</div></div>`).join('');
+if (noDetail > 0) {
+  const b = $('#banner'); b.hidden = false;
+  b.innerHTML = `<b>${fmt(noDetail)} of ${fmt(D.total)} plugins ${noDetail === 1 ? 'has' : 'have'} no details yet.</b> They are counted as “${esc(GBY.nodetails.label)}”, so the endpoint and created-date figures below undercount them. Fetch the details in the scraper and generate the report again for the full picture.`;
+}
+
+/* ---------- tooltip ---------- */
+const tip = $('#tip');
+function showTip(html, x, y) {
+  tip.innerHTML = html; tip.style.opacity = 1;
+  const r = tip.getBoundingClientRect();
+  let left = x + 14, top = y + 14;
+  if (left + r.width > innerWidth - 8) left = x - r.width - 14;
+  if (top + r.height > innerHeight - 8) top = y - r.height - 14;
+  tip.style.left = Math.max(8, left) + 'px'; tip.style.top = Math.max(8, top) + 'px';
+}
+const hideTip = () => tip.style.opacity = 0;
+function bindTips(root) {
+  root.querySelectorAll('[data-tip]').forEach(el => {
+    el.addEventListener('pointermove', e => showTip(el.dataset.tip, e.clientX, e.clientY));
+    el.addEventListener('pointerleave', hideTip);
+    el.addEventListener('pointerdown', e => showTip(el.dataset.tip, e.clientX, e.clientY));
+  });
+}
+addEventListener('scroll', hideTip, {passive: true});
+function placeInfo(e) {
+  const i = e.target.closest && e.target.closest('.info'); if (!i) return;
+  const r = i.getBoundingClientRect(), w = Math.min(320, innerWidth * 0.8);
+  i.classList.toggle('r', r.left - 10 + w > innerWidth - 12 && r.right + 10 - w > 12);
+}
+document.addEventListener('mouseover', placeInfo); document.addEventListener('focusin', placeInfo);
+function seg(id, cb) {
+  const root = $(id);
+  root.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    root.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    cb(b.dataset.v);
+  });
+}
+
+/* A label cut into lines of at most `max` characters, for the text under a column. */
+function wrapLabel(text, max) {
+  const lines = []; let cur = '';
+  text.split(' ').forEach(w => { if (cur && (cur + ' ' + w).length > max) { lines.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w; });
+  if (cur) lines.push(cur);
+  return lines;
+}
+const niceStep = mx => { const raw = Math.max(1, mx) / 4, mag = Math.pow(10, Math.floor(Math.log10(raw))); return [1, 2, 5, 10].map(f => f * mag).find(x => x >= raw); };
+
+/* ---------- 1. endpoint status: columns ---------- */
+function renderStatus() {
+  const rows = GROUPS.map(g => ({g, n: gSum(D.status, g), why: why(D.status, g)})).filter(r => r.n > 0);
+  const tipOf = r => `<b>${esc(r.g.label)}</b><br>${fmt(r.n)} plugins · ${(r.n / D.total * 100).toFixed(1)}%` + (r.why ? `<br><span class="m">${esc(r.why)}</span>` : '');
+  /* columns, growing from the bottom up */
+  const el = $('#c-status-bar'), W = Math.max(320, el.clientWidth), narrow = W < 520;
+  const H = narrow ? 320 : 360, L = narrow ? 38 : 46, R = 8, T = 40, B = 64, pw = W - L - R, ph = H - T - B;
+  const mx = Math.max(1, ...rows.map(r => r.n)), step = niceStep(mx), ymax = Math.ceil(mx * 1.04 / step) * step;
+  const y = v => T + ph - v / ymax * ph, slot = pw / (rows.length || 1), bw = Math.min(120, slot * 0.56);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Plugins by MCP endpoint group">`;
+  for (let v = 0; v <= ymax; v += step) s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" style="stroke:var(--grid)"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${fmt(v)}</text>`;
+  rows.forEach((r, i) => {
+    const x = L + slot * i + (slot - bw) / 2, cx = x + bw / 2, top = y(r.n);
+    s += `<g data-tip="${esc(tipOf(r))}"><rect x="${L + slot * i}" y="${T - 30}" width="${slot}" height="${ph + 30}" fill="transparent"/>`;
+    s += `<rect x="${x}" y="${top}" width="${bw}" height="${Math.max(2, y(0) - top)}" rx="4" style="fill:${r.g.color}"/>`;
+    s += `<text class="v" x="${cx}" y="${top - 22}" text-anchor="middle" style="font-size:${narrow ? 13 : 15}px">${fmt(r.n)}</text><text x="${cx}" y="${top - 7}" text-anchor="middle" style="font-size:12px">${(r.n / D.total * 100).toFixed(1)}%</text>`;
+    wrapLabel(r.g.label, Math.max(10, Math.floor(slot / (narrow ? 7 : 7.5)))).slice(0, 3).forEach((ln, k) => { s += `<text x="${cx}" y="${y(0) + 20 + k * 15}" text-anchor="middle" style="fill:var(--ink2);font-weight:500;font-size:${narrow ? 11.5 : 13}px">${esc(ln)}</text>`; });
+    s += '</g>';
+  });
+  el.innerHTML = s + '</svg>'; bindTips(el);
+  const local = gSum(D.status, GBY.local), unavailable = gSum(D.status, GBY.unavailable), nodet = gSum(D.status, GBY.nodetails);
+  $('#n-status').textContent = `${fmt(D.remotePlugins)} of ${fmt(D.total)} plugins publish a remote MCP endpoint. ${fmt(local)} run only as a local command on the user’s own machine. ${fmt(unavailable)} publish no endpoint in the directory (apps, connectors, skills-only plugins and plugins with no server).` +
+    (nodet ? (nodet === 1 ? ' For 1 plugin the details could not be fetched, so its endpoint is not known.' : ` For ${fmt(nodet)} plugins the details could not be fetched, so their endpoint is not known.`) : '') + ' Hover or tap a column for details.';
+}
+
+/* ---------- 2. categories ---------- */
+let catMode = 'count', showCats = false;
+const TOPN = 14;
+function rankRow(name, total, remote, mode, maxTotal, tipExtra) {
+  const share = total ? remote / total : 0;
+  const w = mode === 'count' ? total / maxTotal * 100 : share * 100;
+  const t = `<b>${esc(name)}</b><br>${fmt(total)} plugins<br><span class="m">${fmt(remote)} with a remote endpoint (${(share * 100).toFixed(1)}%)${tipExtra || ''}</span>`;
+  const bars = mode === 'count'
+    ? `<div class="fl" style="width:${remote / (total || 1) * 100}%;background:var(--community);border-radius:7px 0 0 7px"></div><div class="fl" style="flex:1;background:var(--community);opacity:.42;border-radius:${remote ? '0 7px 7px 0' : '7px'}"></div>`
+    : `<div class="fl" style="width:100%;background:var(--community);border-radius:7px"></div>`;
+  return `<div class="row" data-tip="${esc(t)}"><div class="nm">${esc(name)}</div><div class="tr"><div class="bars" style="width:${Math.max(w, total ? 1.5 : 0)}%">${bars}</div></div><div class="nmb">${mode === 'count' ? fmt(total) : (share * 100).toFixed(0) + '%'}<span>${mode === 'count' ? pct(remote, total) + '% remote' : fmt(remote) + ' of ' + fmt(total)}</span></div></div>`;
+}
+function renderCats() {
+  let rows = D.categories.filter(c => c.total > 0);
+  if (catMode === 'share') rows = rows.slice().sort((a, b) => b.remote / b.total - a.remote / a.total || b.total - a.total);
+  const max = Math.max(1, ...rows.map(r => r.total)), top = showCats ? rows : rows.slice(0, TOPN);
+  $('#lg-cat').innerHTML = catMode === 'count'
+    ? `<span><i style="background:var(--community)"></i>${GBY.remote.label}</span><span><i style="background:var(--community);opacity:.42"></i>Other plugins</span>`
+    : `<span><i style="background:var(--community)"></i>Share of the category’s plugins with a remote endpoint</span>`;
+  const lead = rows[0];
+  $('#n-cat').textContent = !lead ? 'No categories in this scrape.' : catMode === 'count'
+    ? `${lead.title} is leading currently with ${fmt(lead.total)} plugins. A plugin listed under several categories counts once in each. Hover or tap a row for details.`
+    : `${lead.title} has the highest share of plugins with a remote endpoint (${pct(lead.remote, lead.total)}%). Small categories swing widely, so read the counts beside each bar.`;
+  $('#c-cat').innerHTML = top.map(r => rankRow(r.title, r.total, r.remote, catMode, max)).join('');
+  bindTips($('#c-cat'));
+  $('#more-cat').innerHTML = rows.length > TOPN ? `<button class="morebtn" id="morebtn-cat">${showCats ? 'Show top ' + TOPN : 'Show all ' + rows.length}</button>` : '';
+  const b = $('#morebtn-cat'); if (b) b.onclick = () => { showCats = !showCats; renderCats(); };
+}
+seg('#seg-cat', v => { catMode = v; showCats = false; renderCats(); });
+
+/* ---------- 3. heatmap ---------- */
+let hmMode = 'share';
+{
+  /* The heading names the category with the biggest share of remote endpoints, among those big enough to compare. */
+  const big = D.categories.filter(c => c.total >= 20).sort((a, b) => b.remote / b.total - a.remote / a.total || b.total - a.total)[0];
+  if (big) $('#h-hm').textContent = `Which categories publish remote endpoints: ${big.title} leads at ${pct(big.remote, big.total)}%`;
+}
+function renderHM() {
+  const cats = D.categories.filter(c => c.total > 0).slice(0, 18);
+  const cols = GROUPS.filter(g => D.categories.some(c => gSum(c.status, g) > 0));
+  if (!cats.length) { $('#n-hm').textContent = 'No categories in this scrape.'; $('#c-hm').innerHTML = ''; return; }
+  $('#n-hm').textContent = hmMode === 'share'
+    ? 'Each row is a category and each column is an endpoint group. A cell shows the share of that category’s plugins that fall in the group, and a darker cell means a bigger share.'
+    : 'Each row is a category. A cell shows how many of its plugins fall in each endpoint group. Big categories look darker, so use the share view to compare categories of different sizes.';
+  const val = (c, g) => hmMode === 'share' ? gSum(c.status, g) / (c.total || 1) : gSum(c.status, g);
+  const mx = Math.max(0.0001, ...cats.flatMap(c => cols.map(g => val(c, g))));
+  let h = `<table><thead><tr><th></th>${cols.map(g => `<th>${esc(g.label)}</th>`).join('')}</tr></thead><tbody>`;
+  cats.forEach(c => {
+    h += `<tr><td class="rl" title="${esc(c.title)}">${esc(c.title)}</td>`;
+    cols.forEach(g => {
+      const n = gSum(c.status, g), v = val(c, g), a = Math.max(.08, Math.pow(v / mx, .75) * .95);
+      const t = `<b>${esc(c.title)}</b><br>${esc(g.label)}<br><span class="m">${fmt(n)} of ${fmt(c.total)} plugins (${pct(n, c.total)}%)</span>`;
+      h += n === 0 ? `<td class="c z">–</td>` : `<td class="c ${a > .55 ? 'hi' : ''}" style="--a:${a.toFixed(2)}" data-tip="${esc(t)}">${hmMode === 'share' ? (v * 100).toFixed(0) + '%' : fmt(n)}</td>`;
+    });
+    h += '</tr>';
+  });
+  $('#c-hm').innerHTML = h + '</tbody></table>'; bindTips($('#c-hm'));
+}
+seg('#seg-hm', v => { hmMode = v; renderHM(); });
+
+/* ---------- 4. launch pace: monthly and daily ---------- */
+const MS = D.months;
+const FULLN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const mName = m => FULLN[+m.slice(5,7)-1], mShort = m => MN[+m.slice(5,7)-1];
+const mlabelL = m => mShort(m) + ' ' + m.slice(0,4);
+const dlab = d => MN[+d.slice(5,7)-1] + ' ' + (+d.slice(8));
+const dim = m => new Date(Date.UTC(+m.slice(0,4), +m.slice(5,7), 0)).getUTCDate();
+const fmtD = v => v < 10 ? (Math.round(v * 10) / 10).toString() : fmt(v);
+const pace = v => v >= 1000 ? Math.round(v / 100) * 100 : Math.round(v / 10) * 10;
+const CUR = D.asof.slice(0,7), ci = MS.indexOf(CUR) >= 0 ? MS.indexOf(CUR) : MS.length - 1;
+/* up to three full months before the current one */
+const prior = ci > 0 ? MS.slice(Math.max(0, ci - 3), ci) : [];
+const priorAvg = prior.length ? prior.reduce((a, m) => a + D.created[MS.indexOf(m)], 0) / prior.length : 0;
+const priorRange = prior.length > 1 ? mName(prior[0]) + ' to ' + mName(prior[prior.length - 1]) : prior.length ? mName(prior[0]) : '';
+const priorShort = prior.length > 1 ? mShort(prior[0]) + '–' + mShort(prior[prior.length - 1]) : prior.length ? mShort(prior[0]) : '';
+const daily = D.daily.map(([d, n]) => ({d, n, dt: new Date(d + 'T12:00:00Z')}));
+const lastDay = daily[daily.length - 1];
+/* the as-of day is not complete, so it is left out of the rates */
+const curFull = daily.filter(x => x.d >= CUR + '-01' && x.d < lastDay.d);
+const curFullSum = curFull.reduce((a, x) => a + x.n, 0), curPerDay = curFull.length ? curFullSum / curFull.length : 0;
+const l7 = daily.filter(x => x.d < lastDay.d).slice(-7), l7Avg = l7.reduce((t, x) => t + x.n, 0) / (l7.length || 1);
+const curCount = MS.length ? D.created[ci] : 0;
+const proj = Math.max(curCount, curFullSum + (dim(CUR) - curFull.length) * l7Avg);
+const isWknd = x => [0, 6].includes(x.dt.getUTCDay());
+const gm = (g, i) => g.from.reduce((a, s) => a + ((D.createdStatus[s] || [])[i] || 0), 0);
+const usedGroups = GROUPS.filter(g => MS.some((m, i) => gm(g, i) > 0));
+
+/* The sum behind the pace, shown only in the hover of the current month's bar. The daily rate is shown to one decimal so the sum adds up as printed. */
+const paceLeft = dim(CUR) - curFull.length, paceRate = Math.round(l7Avg * 10) / 10, paceAdd = Math.round(paceLeft * paceRate), paceTotal = curFullSum + paceAdd;
+const dayWord = n => n === 1 ? 'day' : 'days';
+const paceLines = [
+  `${fmt(curFullSum)} plugins created on ${curFull.length} complete ${dayWord(curFull.length)} so far`,
+  `+ ${paceLeft} ${dayWord(paceLeft)} still to come × ${paceRate.toLocaleString('en-US', {maximumFractionDigits: 1})} a day`,
+  `= ${fmt(curFullSum)} + ${fmt(paceAdd)} = ${fmt(paceTotal)}`
+];
+if (paceTotal < curCount) paceLines.push(`The ${fmt(curCount)} created so far is higher, so it is used as the pace.`);
+
+if (MS.length) {
+  $('#h-month-t').textContent = prior.length
+    ? `Monthly launches: from ${fmt(D.created[MS.indexOf(prior[0])])} in ${mName(prior[0])} to a pace near ${fmt(pace(proj))} in ${mName(CUR)}`
+    : `Monthly launches: ${fmt(curCount)} so far in ${mName(CUR)}`;
+  $('#n-month').textContent = `Dashed outline shows where ${mName(CUR)} lands if the average of the last ${l7.length} full days (${fmtD(l7Avg)} a day) holds for the rest of the month. ` +
+    (prior.length ? `The dashed horizontal line is the ${priorRange} average. ` : '') +
+    `Months come from each plugin’s created_at in the directory. ${fmt(D.undated)} plugin${D.undated === 1 ? '' : 's'} ${D.undated === 1 ? 'has' : 'have'} no created date (the details were not read) and ${D.undated === 1 ? 'is' : 'are'} left out.`;
+  $('#h-day').textContent = `Average Daily Launches: Approximately ${fmtD(curPerDay)} in ${mName(CUR)}`;
+}
+
+let monthMode = 'group';
+function renderMonth() {
+  const el = $('#c-month');
+  if (!MS.length) return;
+  $('#s-month').hidden = false;
+  const W = Math.max(320, el.clientWidth), H = W < 520 ? 300 : 360, L = W < 520 ? 38 : 44, R = 8, T = 28, B = 34, pw = W - L - R, ph = H - T - B;
+  const mx = Math.max(1, proj, ...D.created), step = niceStep(mx), ymax = Math.ceil(mx * 1.06 / step) * step;
+  const y = v => T + ph - v / ymax * ph, slot = pw / MS.length, bw = Math.min(46, slot * 0.7);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly plugin launches">`;
+  for (let v = 0; v <= ymax; v += step) s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" style="stroke:var(--grid)"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${fmt(v)}</text>`;
+  const skip = Math.ceil(MS.length / Math.max(1, Math.floor(pw / 52)));
+  MS.forEach((m, i) => {
+    const n = D.created[i], x = L + slot * i + (slot - bw) / 2, isCur = i === ci && proj > n;
+    const parts = usedGroups.filter(g => gm(g, i)).map(g => `${esc(g.label)} ${fmt(gm(g, i))}`).join(' · ');
+    const tipHtml = `<b>${mlabelL(m)}</b><br>${fmt(n)} plugins created` + (i === ci ? ` so far<br><span class="m">Pace for the month: about ${fmt(pace(proj))}<br><b>How it is worked out</b><br>${paceLines.map(esc).join('<br>')}</span><br>` : '') + (n ? `<br><span class="m">${parts}</span>` : '');
+    s += `<g data-tip="${esc(tipHtml)}"><rect x="${L + slot * i}" y="${T}" width="${slot}" height="${ph}" fill="transparent"/>`;
+    if (n && monthMode === 'total') s += `<rect x="${x}" y="${y(n)}" width="${bw}" height="${Math.max(1, y(0) - y(n))}" rx="3" style="fill:var(--community)"/>`;
+    else if (n) { let base = 0; usedGroups.forEach(g => { const v = gm(g, i); if (!v) return; s += `<rect x="${x}" y="${y(base + v)}" width="${bw}" height="${Math.max(1, y(base) - y(base + v))}" style="fill:${g.color}"/>`; base += v; }); }
+    if (isCur) {
+      s += `<rect x="${x + 1}" y="${y(proj)}" width="${bw - 2}" height="${y(n) - y(proj)}" rx="3" style="fill:none;stroke:var(--community);stroke-width:1.5;stroke-dasharray:4 3"/>`;
+      s += `<text class="v" x="${x + bw / 2}" y="${y(proj) - 8}" text-anchor="middle">~${fmt(pace(proj))}</text>`;
+    } else if (n && bw >= 18) s += `<text class="v" x="${x + bw / 2}" y="${y(n) - 7}" text-anchor="middle" style="font-size:${W < 520 ? 10 : 12}px">${fmt(n)}</text>`;
+    if (i % skip === 0) s += `<text x="${x + bw / 2}" y="${H - 12}" text-anchor="middle">${mlabel(m)}</text>`;
+    s += '</g>';
+  });
+  if (prior.length) {
+    s += `<line x1="${L}" x2="${W - R}" y1="${y(priorAvg)}" y2="${y(priorAvg)}" style="stroke:var(--ink2);stroke-dasharray:5 4"/>`;
+    s += `<text x="${L + 4}" y="${y(priorAvg) - 6}" style="fill:var(--ink2);font-weight:600">${priorShort} average ${fmt(priorAvg)}</text>`;
+  }
+  el.innerHTML = s + '</svg>'; bindTips(el);
+  $('#lg-month').innerHTML = monthMode === 'group' ? usedGroups.map(g => `<span><i style="background:${g.color}"></i>${esc(g.label)}</span>`).join('') : `<span><i style="background:var(--community)"></i>All plugins</span>`;
+}
+seg('#seg-month', v => { monthMode = v; renderMonth(); });
+
+function renderDay() {
+  const el = $('#c-day');
+  if (!MS.length) return;
+  $('#s-day').hidden = false;
+  const W = Math.max(320, el.clientWidth), H = W < 520 ? 260 : 320, L = 40, R = 8, T = 16, B = 32, pw = W - L - R, ph = H - T - B;
+  const mx = Math.max(1, ...daily.map(x => x.n)), step = niceStep(mx), ymax = Math.ceil(mx * 1.08 / step) * step;
+  const y = v => T + ph - v / ymax * ph, n = daily.length, slot = pw / n, bw = Math.max(2, slot * 0.72);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Daily plugin launches over the last nine weeks">`;
+  for (let v = 0; v <= ymax; v += step) s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" style="stroke:var(--grid)"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${fmt(v)}</text>`;
+  daily.forEach((d, i) => {
+    const x = L + slot * i + (slot - bw) / 2, last = i === n - 1;
+    const t = `<b>${d.dt.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC'})}</b><br>${fmt(d.n)} plugins created${last ? '<br><span class="m">Day in progress</span>' : ''}`;
+    const op = last ? .35 : isWknd(d) ? .5 : 1;
+    s += `<g data-tip="${esc(t)}"><rect x="${L + slot * i}" y="${T}" width="${slot}" height="${ph}" fill="transparent"/><rect x="${x}" y="${y(d.n)}" width="${bw}" height="${Math.max(1, y(0) - y(d.n))}" rx="${bw > 5 ? 2 : 0}" style="fill:var(--community);opacity:${op}"/></g>`;
+    if (d.dt.getUTCDay() === 1 && W >= 520 || (d.dt.getUTCDay() === 1 && i % 14 === 0)) s += `<text x="${x + bw / 2}" y="${H - 10}" text-anchor="middle">${dlab(d.d)}</text>`;
+  });
+  const pts = [];
+  for (let i = 6; i < n - 1; i++) { let sm = 0; for (let k = i - 6; k <= i; k++) sm += daily[k].n; pts.push([L + slot * i + slot / 2, y(sm / 7)]); }
+  s += `<polyline fill="none" style="stroke:var(--partner);stroke-width:2.5;stroke-linejoin:round" points="${pts.map(p => p.join(',')).join(' ')}"/>`;
+  el.innerHTML = s + '</svg>'; bindTips(el);
+}
+
+/* ---------- endpoint comparison tab ---------- */
+(function () {
+  const rows = MS.map((m, i) => ({m, t: D.created[i], c: usedGroups.map(g => gm(g, i))})).reverse();
+  const sum = k => rows.reduce((a, r) => a + r.c[k], 0), tot = rows.reduce((a, r) => a + r.t, 0);
+  const ri = usedGroups.indexOf(GBY.remote);
+  const full = rows.filter(r => r.m !== CUR && r.t > 0).slice(0, 3);
+  const ft = full.reduce((a, r) => a + r.t, 0), fr = ri >= 0 ? full.reduce((a, r) => a + r.c[ri], 0) : 0;
+  $('#h-cmp').textContent = `Endpoint comparison: plugins created per month${ft && ri >= 0 ? `, ${pct(fr, ft)}% with a remote endpoint lately` : ''}`;
+  $('#n-cmp').textContent = MS.length ? `Plugins created per month, split by MCP endpoint group. The rows run from the latest month back to the first. ${mlabelL(CUR)} is partial (it runs to ${dlab(D.asof)}), and months with no plugins created are shown as “none”.` : 'No plugin in this scrape has a created date.';
+  if (!MS.length) return;
+  let h = `<table class="tt"><thead><tr><th>Month</th>${usedGroups.map(g => `<th><i style="background:${g.color}"></i>${esc(g.label)}</th>`).join('')}<th>Total</th></tr></thead><tbody>`;
+  rows.forEach(r => {
+    const lab = mlabelL(r.m) + (r.m === CUR ? '*' : '');
+    if (!r.t) { h += `<tr class="zero"><td>${lab}</td><td colspan="${usedGroups.length + 1}" style="text-align:left">none</td></tr>`; return; }
+    h += `<tr><td>${lab}</td>${r.c.map(n => `<td><b>${fmt(n)}</b><span>${pct(n, r.t)}%</span></td>`).join('')}<td class="big"><b>${fmt(r.t)}</b></td></tr>`;
+  });
+  h += `</tbody><tfoot><tr><td>All months</td>${usedGroups.map((g, k) => `<td>${fmt(sum(k))}</td>`).join('')}<td>${fmt(tot)}</td></tr></tfoot></table>`;
+  $('#c-cmp').innerHTML = h;
+})();
+
+/* ---------- 7. table ---------- */
+const MAXROWS = 250;
+function initTable() {
+  $('#f-cat').innerHTML = '<option value="">All categories</option>' + D.categories.filter(c => c.total > 0).map(c => `<option value="${esc(c.title)}">${esc(c.title)} (${fmt(c.total)})</option>`).join('');
+  $('#f-st').innerHTML = '<option value="">All endpoint groups</option>' + GROUPS.filter(g => gSum(D.status, g) > 0).map(g => `<option value="${g.k}">${esc(g.label)} (${fmt(gSum(D.status, g))})</option>`).join('');
+  ['#f-q', '#f-cat', '#f-st'].forEach(id => $(id).addEventListener(id === '#f-q' ? 'input' : 'change', renderTable));
+  renderTable();
+}
+function renderTable() {
+  const q = $('#f-q').value.trim().toLowerCase(), cat = $('#f-cat').value, st = $('#f-st').value;
+  const hit = D.plugins.filter(p => (!cat || p.c.includes(cat)) && (!st || GOF[p.s] === st) &&
+    (!q || p.n.toLowerCase().includes(q) || p.d.toLowerCase().includes(q) || p.u.some(u => u.toLowerCase().includes(q))));
+  const rows = hit.slice(0, MAXROWS);
+  $('#f-cnt').textContent = hit.length ? `${fmt(hit.length)} plugin${hit.length === 1 ? '' : 's'}` + (hit.length > MAXROWS ? `, showing the first ${fmt(MAXROWS)}. Search or filter to narrow it down.` : '') : 'No plugins match.';
+  $('#c-tbl').innerHTML = rows.map(p => {
+    const name = /^https?:\/\//i.test(p.w) ? `<a href="${esc(p.w)}" target="_blank" rel="noreferrer noopener">${esc(p.n)}</a>` : esc(p.n);
+    const cats = p.c.slice(0, 3).map(c => `<span class="tcat">${esc(c)}</span>`).join('') + (p.c.length > 3 ? `<span class="tcat">+${p.c.length - 3}</span>` : '');
+    const u = p.u.length ? esc(p.u[0]) + (p.u.length > 1 ? ` <span class="dev">+${p.u.length - 1} more</span>` : '') : '<span class="dev">–</span>';
+    return `<tr><td><b>${name}</b>${p.d ? `<div class="dev">${esc(p.d)}</div>` : ''}</td><td>${cats}</td><td><span class="pill" title="${esc(SLAB[p.s])}"><i style="background:${GBY[GOF[p.s]].color}"></i>${esc(GBY[GOF[p.s]].label)}</span></td><td class="u">${u}</td></tr>`;
+  }).join('');
+}
+
+/* ---------- note (shown in the info icon) ---------- */
+$('#h-cat').insertAdjacentHTML('beforeend', info(TIPS.cats));
+
+function showTab(t) {
+  ['main', 'cmp', 'table'].forEach(k => { $('#tab-' + k).hidden = t !== k; });
+  document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === t));
+  hideTip(); if (t === 'main') { renderMonth(); renderDay(); renderStatus(); }
+}
+document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+
+$('#dl').addEventListener('click', async () => {
+  let text;
+  try {
+    const r = await fetch(location.href);
+    if (!r.ok) throw new Error('fetch failed');
+    text = await r.text();
+    if (!text.includes('__REPORT_DATA__') && !text.includes('const D =')) throw new Error('unexpected content');
+  } catch (e) {
+    text = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  }
+  const url = URL.createObjectURL(new Blob([text], {type: 'text/html;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href = url; a.download = 'chatgpt_plugins_dashboard_' + D.asof + '.html';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+});
+
+renderStatus(); renderCats(); renderHM(); renderMonth(); renderDay(); initTable();
+let rt; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(() => { renderMonth(); renderDay(); renderStatus(); }, 120); }).observe(document.body);
+</script>
+</body></html>

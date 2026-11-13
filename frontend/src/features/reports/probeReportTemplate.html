@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MCP client registration: DCR and CIMD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FA;--surface:#FFFFFF;--ink:#101828;--ink2:#475467;--ink3:#7A8499;--line:#E1E7F0;--grid:#E9EDF4;--track:#EDF1F7;
+  --community:#4263EB;--partner:#F59F00;--anthropic:#12B886;--up:#0CA678;--down:#E8590C;
+  --heat:66,99,235;--on-heat:#FFFFFF;--shadow:0 1px 2px rgba(16,24,40,.04);
+  color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C111B;--surface:#141B29;--ink:#EEF2F8;--ink2:#A7B1C4;--ink3:#7B879D;--line:#243048;--grid:#1E283B;--track:#1B2436;
+    --community:#7C93FF;--partner:#FFB627;--anthropic:#3DDBA9;--up:#3DDBA9;--down:#FF8A4C;
+    --heat:124,147,255;--on-heat:#0C111B;--shadow:none;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C111B;--surface:#141B29;--ink:#EEF2F8;--ink2:#A7B1C4;--ink3:#7B879D;--line:#243048;--grid:#1E283B;--track:#1B2436;
+  --community:#7C93FF;--partner:#FFB627;--anthropic:#3DDBA9;--up:#3DDBA9;--down:#FF8A4C;
+  --heat:124,147,255;--on-heat:#0C111B;--shadow:none;color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 24px 72px}
+h1,h2{font-family:"Bricolage Grotesque","Figtree",system-ui,sans-serif;font-weight:700;letter-spacing:-.02em;margin:0}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.06;max-width:18ch}
+.sub{color:var(--ink3);font-size:14px;margin:14px 0 0}
+.lede{font-size:clamp(17px,2vw,20px);line-height:1.5;color:var(--ink2);max-width:62ch;margin:20px 0 0}
+.lede b{color:var(--ink);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:36px 0 0}
+.kpi{background:var(--surface);padding:20px 22px}
+.kpi .n{font-family:"Bricolage Grotesque","Figtree",sans-serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);letter-spacing:-.02em;line-height:1.05}
+.kpi .l{font-weight:600;font-size:14px;margin-top:8px}
+.kpi .d{color:var(--ink3);font-size:13px;margin-top:4px}
+section{margin-top:56px}
+.head{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:6px}
+h2{font-size:clamp(21px,2.6vw,28px);line-height:1.18;max-width:34ch}
+.note{color:var(--ink2);font-size:15px;margin:8px 0 18px;max-width:70ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 20px 14px;box-shadow:var(--shadow)}
+.seg{display:inline-flex;background:var(--track);border-radius:10px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:13.5px;font-weight:500;color:var(--ink2);background:transparent;border:0;border-radius:8px;padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.seg button:focus-visible,.row:focus-visible{outline:2px solid var(--community);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink2);margin:0 0 6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:"Figtree",system-ui,sans-serif;fill:var(--ink3);font-size:12px}
+svg .v{fill:var(--ink);font-weight:600}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+/* ranking */
+.rank{display:flex;flex-direction:column;gap:2px}
+.row{display:grid;grid-template-columns:210px 1fr 110px;align-items:center;gap:12px;padding:7px 8px;border-radius:8px;cursor:default}
+.row:hover{background:var(--track)}
+.row .nm{font-size:14.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .tr{height:14px;background:var(--track);border-radius:7px;overflow:hidden}
+.row:hover .tr{background:var(--surface)}
+.row .fl{height:100%;background:var(--community);border-radius:7px;transition:width .35s ease}
+.row .nmb{text-align:right;font-size:14px;font-weight:600}
+.row .nmb span{color:var(--ink3);font-weight:400;margin-left:6px}
+/* heatmap */
+.hm{overflow-x:auto}
+.hm table{border-collapse:separate;border-spacing:3px;width:100%;min-width:560px}
+.hm th{font-size:13px;font-weight:600;color:var(--ink2);padding:4px 6px;text-align:center}
+.hm th:first-child{text-align:left}
+.hm td.rl{font-size:14px;font-weight:500;padding:0 10px 0 0;white-space:nowrap;width:215px}
+.hm td.c{text-align:center;font-size:13px;font-weight:600;height:36px;border-radius:7px;background:rgba(var(--heat),var(--a));color:var(--ink)}
+.hm td.c.hi{color:var(--on-heat)}
+.hm td.c.top{box-shadow:inset 0 0 0 2px var(--partner)}
+.hmnote{font-size:13px;color:var(--ink3);margin:10px 0 4px}
+.hmnote i{display:inline-block;width:12px;height:12px;border-radius:3px;box-shadow:inset 0 0 0 2px var(--partner);vertical-align:-2px;margin-right:6px}
+/* diverging */
+.dv{display:grid;grid-template-columns:210px 1fr 74px;align-items:center;gap:12px;padding:6px 8px}
+.dv .nm{font-size:14.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dv .ar{position:relative;height:16px}
+.dv .ar::before{content:"";position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:var(--ink3);opacity:.5}
+.dv .bar{position:absolute;top:0;height:100%;border-radius:4px}
+.dv .vl{font-size:14px;font-weight:600;text-align:right}
+.axl{display:grid;grid-template-columns:210px 1fr 74px;gap:12px;padding:0 8px 8px;font-size:12.5px;color:var(--ink3)}
+.axl div:nth-child(2){display:flex;justify-content:space-between}
+.foot{margin-top:64px;border-top:1px solid var(--line);padding-top:24px;color:var(--ink2);font-size:14px;max-width:80ch}
+.foot h3{font-family:"Bricolage Grotesque","Figtree",sans-serif;font-size:17px;margin:0 0 10px;color:var(--ink)}
+.foot ul{margin:0;padding-left:18px}.foot li{margin:6px 0}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);padding:9px 12px;border-radius:9px;font-size:13px;line-height:1.45;max-width:280px;opacity:0;transition:opacity .08s}
+#tip b{font-weight:600}#tip .m{opacity:.7}
+@media (max-width:860px){
+  .kpis{grid-template-columns:1fr 1fr}.kpi:last-child:nth-child(odd){grid-column:1/-1}
+  .cols2{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr 100px;grid-template-areas:"nm nmb" "tr tr";gap:4px 12px}
+  .row .nm{grid-area:nm}.row .tr{grid-area:tr}.row .nmb{grid-area:nmb}
+  .dv,.axl{grid-template-columns:130px 1fr 60px;gap:8px}
+  .hm td.rl{width:150px;white-space:normal;font-size:13px}
+}
+@media (max-width:520px){.wrap{padding:28px 16px 56px}.panel{padding:16px 12px 10px}}
+@media (prefers-reduced-motion:reduce){.row .fl{transition:none}}
+
+.kpis.three{grid-template-columns:repeat(4,1fr)}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px}
+.chip{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.chip .n{font-family:"Bricolage Grotesque","Figtree",sans-serif;font-weight:700;font-size:26px;line-height:1.1}
+.chip .l{font-size:13px;color:var(--ink2);margin-top:4px}
+.chip.z .n{color:var(--ink3)}
+.lists{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.lists h3{font-family:"Bricolage Grotesque","Figtree",sans-serif;font-size:16px;margin:0 0 8px}
+.mini{width:100%;border-collapse:collapse;font-size:14px}
+.mini td{padding:7px 4px;border-top:1px solid var(--line)}
+.mini td:last-child{text-align:right;font-weight:600;white-space:nowrap}
+.arrow{color:var(--ink3);margin:0 4px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--track);color:var(--ink2)}
+.pill.p{background:rgba(245,159,0,.18);color:var(--ink)}
+.pill.c{background:rgba(var(--heat),.16);color:var(--ink)}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 12px}
+.filters select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+.tw{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.tw table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+.tw th{position:sticky;top:0;background:var(--surface);text-align:left;font-size:12.5px;color:var(--ink3);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line)}
+.tw td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tw td.s{color:var(--ink2);font-size:13px;max-width:360px}
+.mk{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--partner);border-radius:1px}
+.trk{position:relative}
+@media (max-width:860px){.kpis.three{grid-template-columns:1fr 1fr}.lists{grid-template-columns:1fr}}
+
+:root{--life:#AE3EC9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--life:#DA77F2}}
+:root[data-theme="dark"]{--life:#DA77F2}
+.lv{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:99px;margin-left:8px;vertical-align:1px;color:var(--ink)}
+.lv-dept{background:color-mix(in srgb,var(--community) 20%,transparent)}
+.lv-industry{background:color-mix(in srgb,var(--anthropic) 24%,transparent)}
+.lv-object{background:color-mix(in srgb,var(--partner) 26%,transparent)}
+.lv-life{background:color-mix(in srgb,var(--life) 22%,transparent)}
+.rank.wide .row,.dv.w{grid-template-columns:270px 1fr 110px}
+.dv.w{grid-template-columns:270px 1fr 74px}
+.axl.w{grid-template-columns:270px 1fr 74px}
+.hm td.rl{width:270px}
+.banner{border:1px solid var(--partner);background:color-mix(in srgb,var(--partner) 10%,transparent);border-radius:12px;padding:14px 18px;margin:28px 0 0;font-size:15px;color:var(--ink)}
+.banner b{font-weight:600}
+.est{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;border:1px dashed var(--ink3);color:var(--ink2);margin-left:10px;vertical-align:3px}
+.sel{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:14px;color:var(--ink2);margin-bottom:12px}
+.sel select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:6px 10px}
+.morebtn{font:inherit;font-size:14px;font-weight:500;color:var(--ink2);background:var(--track);border:0;border-radius:9px;padding:8px 14px;margin:10px 0 4px 8px;cursor:pointer}
+.stack{display:flex;gap:6px;flex-wrap:wrap}
+.hm th.thin{opacity:.6}.hm td.c.thin{opacity:.55}
+.nrow td{font-size:12.5px;color:var(--ink3);text-align:center;padding:2px 4px}
+@media (max-width:860px){.rank.wide .row{grid-template-columns:1fr 100px}.dv.w,.axl.w{grid-template-columns:150px 1fr 60px}.hm td.rl{width:170px}}
+
+.ctr{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+.tabs{display:flex;gap:6px;margin:36px 0 0;border-bottom:1px solid var(--line)}
+.tabs button{font:inherit;font-size:15px;font-weight:600;color:var(--ink2);background:transparent;border:0;border-bottom:3px solid transparent;padding:10px 16px;margin-bottom:-1px;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--community)}
+.tabs button:focus-visible{outline:2px solid var(--community);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+.tt-wrap{overflow-x:auto}
+.tt{width:100%;border-collapse:collapse;min-width:640px;font-size:15px}
+.tt th{text-align:right;font-size:13px;font-weight:600;color:var(--ink2);padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:bottom;white-space:nowrap}
+.tt th:first-child,.tt td:first-child{text-align:left}
+.tt th small{display:block;font-weight:400;color:var(--ink3);font-size:11.5px;white-space:normal;max-width:150px;margin-left:auto}
+.tt th i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.tt td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.tt td b{font-weight:600}.tt td span{color:var(--ink3);font-size:12.5px;margin-left:7px}
+.tt td.mix{width:170px}
+.mixbar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--track);margin-left:auto;width:150px}
+.tt tr.zero td{color:var(--ink3);font-style:italic}
+.tt tr:hover td{background:var(--track)}
+.tt tfoot td{font-weight:700;border-top:2px solid var(--line);border-bottom:0}
+.tt td.big b{font-size:16px}
+
+.cap{display:grid;grid-template-columns:150px 1fr 190px;gap:12px;align-items:center;padding:8px 8px;border-radius:8px}
+.cap:hover{background:var(--track)}
+.cap .nm{font-size:14.5px;font-weight:500}.cap .nm small{display:block;color:var(--ink3);font-weight:400;font-size:12px;line-height:1.3}
+.stk{display:flex;height:18px;border-radius:9px;overflow:hidden;background:var(--track)}
+.stk div{height:100%}
+.cap .nmb{text-align:right;font-size:14px;font-weight:600}.cap .nmb span{color:var(--ink3);font-weight:400;margin-left:6px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.ctl{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:0 0 14px}
+.ctl label{font-size:14px;color:var(--ink2);display:flex;gap:8px;align-items:center}
+.ctl input[type=search],.ctl select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+.ctl input[type=search]{min-width:220px}
+.srt th{cursor:pointer;user-select:none}.srt th:hover{color:var(--ink)}
+.srt th.on::after{content:" ▾"}.srt th.on.asc::after{content:" ▴"}
+.dt{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;min-width:760px}
+.dt th{position:sticky;top:0;background:var(--surface);text-align:right;font-size:12.5px;color:var(--ink3);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.dt th:first-child,.dt td:first-child{text-align:left}
+.dt td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.dt td.h{border-radius:0;background:rgba(var(--heat),var(--a));font-weight:600}.dt td.h.hi{color:var(--on-heat)}
+.dt td small{color:var(--ink3);font-weight:400;margin-left:5px;font-size:12px}.dt td.h.hi small{color:var(--on-heat);opacity:.8}
+.ytag{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;min-width:34px;text-align:center}
+.ytag.y{background:color-mix(in srgb,var(--community) 22%,transparent)}.ytag.n{background:var(--track);color:var(--ink2)}.ytag.x{background:color-mix(in srgb,var(--partner) 24%,transparent)}
+.est2{color:var(--ink3);font-size:11px;margin-left:4px}
+@media (max-width:860px){.cap{grid-template-columns:1fr 130px;grid-template-areas:"nm nmb" "stk stk"}.cap .nm{grid-area:nm}.cap .stk{grid-area:stk}.cap .nmb{grid-area:nmb}}
+.toolbar{display:flex;justify-content:flex-end;margin:-16px 0 14px}
+.dlbtn{font:inherit;font-size:14px;font-weight:600;color:var(--bg);background:var(--ink);border:0;border-radius:9px;padding:9px 16px;cursor:pointer}
+.dlbtn:hover{opacity:.88}.dlbtn:focus-visible{outline:2px solid var(--community);outline-offset:2px}
+@media print{.toolbar{display:none}}
+</style>
+</head><body>
+<div class="wrap">
+<div class="toolbar"><button id="dl" type="button" class="dlbtn">Download report</button></div>
+<header>
+  <h1>MCP client registration: DCR and CIMD</h1>
+  <p class="lede" id="lede"></p>
+</header>
+<div class="kpis" id="kpis"></div>
+
+<div class="ctl" style="margin-top:22px">
+  <span id="base-lbl" style="font-size:14px;color:var(--ink2)">Percentages are based on:</span>
+  <div class="seg" role="group" aria-label="Percentage base" id="seg-base"><button aria-pressed="true" data-v="all">All probed endpoints</button><button aria-pressed="false" data-v="done">Only endpoints that gave an OAuth answer</button></div>
+  <span id="base-note" style="font-size:13.5px;color:var(--ink3)"></span>
+</div>
+
+<div class="tabs" role="tablist" aria-label="Views">
+  <button role="tab" data-tab="ov" aria-selected="true">Overview</button>
+  <button role="tab" data-tab="cat" aria-selected="false">By category</button>
+  <button role="tab" data-tab="tier" aria-selected="false">By tier and launch month</button>
+  <button role="tab" data-tab="iss" aria-selected="false">Probe issues</button>
+  <button role="tab" data-tab="all" aria-selected="false">All endpoints</button>
+</div>
+
+<div id="tab-ov" role="tabpanel">
+  <section style="margin-top:36px">
+    <div class="head"><h2 id="h-cap"><span id="h-cap-t"></span></h2></div>
+    <p class="note" id="n-cap"></p>
+    <div class="panel"><div class="legend" id="lg-cap"></div><div id="c-cap"></div></div>
+  </section>
+  <section>
+    <div class="head"><h2 id="h-combo"></h2></div>
+    <p class="note" id="n-combo"></p>
+    <div class="panel"><div id="c-combo"></div></div>
+  </section>
+  <section>
+    <div class="head"><h2 id="h-probe"></h2></div>
+    <p class="note" id="n-probe"></p>
+    <div class="panel"><div id="c-probe"></div></div>
+  </section>
+</div>
+
+<div id="tab-cat" role="tabpanel" hidden>
+  <section style="margin-top:36px">
+    <div class="head"><h2 id="h-cat"><span id="h-cat-t"></span></h2></div>
+    <div class="ctl">
+      <div class="seg" role="group" aria-label="Metric" id="seg-met"><button aria-pressed="true" data-v="dcr">DCR</button><button aria-pressed="false" data-v="cimd">CIMD</button><button aria-pressed="false" data-v="both">DCR and CIMD</button><button aria-pressed="false" data-v="neither">Neither</button></div>
+      <div class="seg" role="group" aria-label="Taxonomy level" id="seg-lvl"><button aria-pressed="true" data-v="all">All levels</button><button aria-pressed="false" data-v="dept">Departments</button><button aria-pressed="false" data-v="industry">Industries</button><button aria-pressed="false" data-v="object">Objects</button></div>
+    </div>
+    <div class="ctl">
+      <div class="seg" role="group" aria-label="Category source" id="seg-src"><button aria-pressed="true" data-v="both">Official + estimated categories</button><button aria-pressed="false" data-v="off">Official only</button></div>
+      <label>Hide categories with fewer than <select id="s-min"><option>3</option><option selected>8</option><option>12</option><option>20</option></select> probed endpoints</label>
+    </div>
+    <p class="note" id="n-cat"></p>
+    <div class="panel"><div class="rank wide" id="c-cat"></div></div>
+  </section>
+  <section>
+    <div class="head"><h2>Every category compared across DCR and CIMD</h2></div>
+    <p class="note" id="n-tbl">Click a column heading to sort. Cells are shaded by percentage, with the count in small type.</p>
+    <div class="panel"><div class="tw" style="max-height:640px"><table class="dt srt" id="t-cat"></table></div></div>
+  </section>
+</div>
+
+<div id="tab-tier" role="tabpanel" hidden>
+  <section style="margin-top:36px">
+    <div class="head"><h2 id="h-tier"><span id="h-tier-t"></span></h2></div>
+    <p class="note" id="n-tier"></p>
+    <div class="panel"><div class="tw" style="max-height:none"><table class="dt" id="t-tier" style="min-width:560px"></table></div></div>
+  </section>
+  <section>
+    <div class="head"><h2 id="h-coh"></h2></div>
+    <p class="note" id="n-coh"></p>
+    <div class="panel"><div class="legend"><span><i class="sw" style="background:var(--community)"></i>DCR</span><span><i class="sw" style="background:var(--partner)"></i>CIMD</span></div><div id="c-coh"></div>
+      <div class="tw" style="max-height:none;margin-top:10px"><table class="dt" id="t-coh" style="min-width:560px"></table></div></div>
+  </section>
+</div>
+
+<div id="tab-iss" role="tabpanel" hidden>
+  <section style="margin-top:36px">
+    <div class="head"><h2 id="h-iss"></h2></div>
+    <p class="note" id="n-iss"></p>
+    <div class="panel"><div class="chips" id="chips-iss"></div><div class="rank" id="c-iss"></div></div>
+  </section>
+  <section>
+    <div class="head"><h2>Identity providers the probe could recognise</h2></div>
+    <p class="note" id="n-prov"></p>
+    <div class="panel"><div class="tw" style="max-height:none"><table class="dt" id="t-prov" style="min-width:520px"></table></div></div>
+  </section>
+  <section>
+    <div class="head"><h2>Probes that did not complete</h2></div>
+    <p class="note" id="n-nc"></p>
+    <div class="panel" id="p-nc"><div class="tw" style="max-height:520px"><table class="dt" id="t-nc" style="min-width:680px"></table></div></div>
+  </section>
+</div>
+
+<div id="tab-all" role="tabpanel" hidden>
+  <section style="margin-top:36px">
+    <div class="head"><h2>All probed endpoints</h2></div>
+    <div class="ctl">
+      <input type="search" id="f-q" placeholder="Search name or endpoint" aria-label="Search">
+      <select id="f-cat" aria-label="Category"></select>
+      <select id="f-tier" aria-label="Tier"><option value="">All tiers</option><option value="partner">Verified</option><option value="community">Community</option><option value="anthropic">Anthropic</option></select>
+      <select id="f-dcr" aria-label="DCR"><option value="">DCR: any</option><option value="Yes">DCR: Yes</option><option value="No">DCR: No</option><option value="NA">DCR: not complete</option></select>
+      <select id="f-cimd" aria-label="CIMD"><option value="">CIMD: any</option><option value="Yes">CIMD: Yes</option><option value="No">CIMD: No</option></select>
+    </div>
+    <p class="note" id="n-all"></p>
+    <div class="panel"><div class="tw" style="max-height:640px"><table class="dt" id="t-all" style="min-width:860px"></table></div></div>
+  </section>
+</div>
+
+</div>
+<div id="tip" role="tooltip"></div>
+<script>
+const D = /*__REPORT_DATA__*/null;
+const $ = s => document.querySelector(s);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const P = (a,b,d=0) => b ? (a/b*100).toFixed(d)+'%' : '–';
+const MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const mlabel = m => MN[+m.slice(5,7)-1]+' '+m.slice(0,4);
+const SP={'hr':'HR','it-security':'IT & security','retail-ecommerce':'Retail & e-commerce','financial-services':'Financial services','health-life-sciences':'Health & life sciences','software-saas':'Software & SaaS','media-entertainment':'Media & entertainment','research-academia':'Research & academia','travel-hospitality':'Travel & hospitality','agencies-staffing':'Agencies & staffing','transportation-logistics':'Transportation & logistics','fitness-wellness':'Fitness & wellness','real-estate':'Real estate','customer-support':'Customer support','ai-models-agents':'AI models & agents','files-documents':'Files & documents','designs-media':'Designs & media','notes-memory':'Notes & memory','tickets-tasks':'Tickets & tasks','email-messages':'Email & messages','contacts-leads':'Contacts & leads','reference-docs':'Reference docs','events-tickets':'Events & tickets','papers-articles':'Papers & articles','logs-errors':'Logs & errors','courses-lessons':'Courses & lessons','recipes-meals':'Recipes & meals','workouts-health-records':'Workouts & health records','social-media':'Social media','work-career':'Work & career','events-going-out':'Events & going out','books-reading':'Books & reading','family-relationships':'Family & relationships','volunteering-giving':'Volunteering & giving','maps-transit':'Maps & transit','beauty-grooming':'Beauty & grooming','film-tv':'Film & TV','arts-crafts':'Arts & crafts','philosophy-religion':'Philosophy & religion','politics-government':'Politics & government','maths':'Maths','nonprofit':'Nonprofit'};
+const pretty = r => SP[r] || (r.charAt(0).toUpperCase()+r.slice(1).replace(/-/g,' '));
+
+const R = D.rows;
+const HAS_DIR = !!D.dir;
+// Categories also come with endpoints loaded from a CSV, so they do not need the directory scrape; tiers and launch months do.
+const HAS_CAT = HAS_DIR || R.some(r => r.cat);
+// Only the Overview tab is switched on for now. Set to false to bring the other tabs back.
+const OV_ONLY = true;
+if (OV_ONLY) document.querySelectorAll('.tabs button:not([data-tab="ov"])').forEach(b => b.remove());
+if (!HAS_DIR) {
+  document.querySelectorAll('[data-tab="tier"]').forEach(b => b.remove());
+  $('#f-tier').style.display = 'none';
+}
+if (!HAS_CAT) {
+  document.querySelectorAll('[data-tab="cat"]').forEach(b => b.remove());
+  $('#f-cat').style.display = 'none';
+}
+if (!D.model) $('#seg-src').style.display = 'none';
+const TIERN={partner:'Verified',community:'Community',anthropic:'Anthropic'};
+
+/* tooltip, tabs, seg */
+const tip=$('#tip');
+function showTip(h,x,y){tip.innerHTML=h;tip.style.opacity=1;const r=tip.getBoundingClientRect();let l=x+14,t=y+14;if(l+r.width>innerWidth-8)l=x-r.width-14;if(t+r.height>innerHeight-8)t=y-r.height-14;tip.style.left=Math.max(8,l)+'px';tip.style.top=Math.max(8,t)+'px';}
+const hideTip=()=>tip.style.opacity=0;
+function bindTips(root){root.querySelectorAll('[data-tip]').forEach(el=>{el.addEventListener('pointermove',e=>showTip(el.dataset.tip,e.clientX,e.clientY));el.addEventListener('pointerleave',hideTip);el.addEventListener('pointerdown',e=>showTip(el.dataset.tip,e.clientX,e.clientY));});}
+addEventListener('scroll',hideTip,{passive:true});
+function seg(id,cb){const root=$(id);root.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;root.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));cb(b.dataset.v);});}
+let curTab='ov';
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{curTab=b.dataset.tab;
+  document.querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  ['ov','cat','tier','iss','all'].forEach(t=>{const p=$('#tab-'+t);if(p)p.hidden=t!==curTab;}); hideTip(); renderTab();}));
+
+/* Same colours as the Claude report: blue is the main series, amber the second, grey for the rest. */
+const COL={y:'var(--community)',n:'var(--ink3)',x:'var(--partner)'};
+
+/* state */
+let baseMode='all', metric='dcr', lvF='all', srcMode='both', minN=8, sortKey='n', sortAsc=false;
+const done = rows => rows.filter(r=>r.status==='Complete');
+const M = {dcr:r=>r.dcr==='Yes',cimd:r=>r.cimd==='Yes',both:r=>r.dcr==='Yes'&&r.cimd==='Yes',neither:r=>r.dcr==='No'&&r.cimd==='No'};
+const MNAME={dcr:'DCR',cimd:'CIMD',both:'both DCR and CIMD',neither:'neither DCR nor CIMD'};
+const baseN = rows => baseMode==='done' ? done(rows).length : rows.length;
+const stat = (rows,k) => {const y=rows.filter(M[k]).length,b=baseN(rows);return {y,b,p:b?y/b:0};};
+const catOf = r => srcMode==='both' ? r.cat : (r.catSrc==='off' ? r.cat : null);
+const lvlOf = k => k.split(':')[0];
+const catName = k => pretty(k.split(':')[1]);
+const chip = l => `<span class="lv lv-${l}">${{dept:'Dept',industry:'Industry',object:'Object',life:'Life'}[l]}</span>`;
+const baseWord = () => baseMode==='done' ? 'endpoints that gave an OAuth answer' : 'all probed endpoints';
+
+/* header */
+const NDONE=done(R).length, NALL=R.length;
+function renderHeader(){
+  const s=k=>stat(R,k);
+  $('#lede').innerHTML=`<b>${P(s('dcr').y,s('dcr').b)}</b> of ${baseWord()} support Dynamic Client Registration (DCR) and <b>${P(s('cimd').y,s('cimd').b)}</b> support Client ID Metadata Documents (CIMD). <b>${P(s('neither').y,s('neither').b)}</b> support neither.`;
+  const kw = baseMode==='done' ? 'endpoints that gave an OAuth answer' : 'probed endpoints';
+  $('#kpis').innerHTML=[['dcr','DCR (Dynamic Client Registration)'],['cimd','CIMD (Client ID Metadata Documents)'],['both','Both DCR and CIMD']].map(([k,l])=>{const x=s(k);return `<div class="kpi"><div class="n">${P(x.y,x.b)}</div><div class="l">${l}</div><div class="d">${fmt(x.y)} of ${fmt(x.b)} ${kw}</div></div>`;}).join('');
+  const inc = NALL-NDONE;
+  $('#base-note').textContent = inc===0 ? 'Every probe completed, so both options give the same numbers.' : baseMode==='done' ? `Leaves out the ${fmt(inc)} endpoint${inc===1?'':'s'} where the probe did not complete.` : `Counts the ${fmt(inc)} incomplete probe${inc===1?'':'s'} as “not supported or unknown”, so percentages are lower.`;
+}
+
+/* Vertical columns, growing from the bottom up. cols: [{label, desc, segs:[{v,color,op}], top1, top2, tip}].
+   o.pct: the axis runs 0 to 100% and each column's segments add up to 100. Otherwise it runs 0 to o.max (a count). */
+function wrapLabel(text,max){const lines=[];let cur='';String(text).split(' ').forEach(w=>{if(cur&&(cur+' '+w).length>max){lines.push(cur);cur=w;}else cur=cur?cur+' '+w:w;});if(cur)lines.push(cur);return lines;}
+const niceStep=mx=>{const raw=Math.max(1,mx)/4,mag=Math.pow(10,Math.floor(Math.log10(raw)));return [1,2,5,10].map(f=>f*mag).find(x=>x>=raw);};
+function colChart(el,cols,o){
+  const W=Math.max(320,el.clientWidth||600),narrow=W<520,H=narrow?320:360,L=narrow?38:46,Rr=8,T=46,B=o.desc?96:66,pw=W-L-Rr,ph=H-T-B;
+  const slot=pw/Math.max(1,cols.length),bw=Math.min(o.bw||110,slot*.5);
+  const step=o.pct?25:niceStep(o.max),ymax=o.pct?100:Math.ceil(Math.max(1,o.max)*1.04/step)*step;
+  const y=v=>T+ph-v/ymax*ph, maxc=Math.max(9,Math.floor(slot/(narrow?6.5:7)));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria)}">`;
+  for(let v=0;v<=ymax;v+=step) s+=`<line x1="${L}" x2="${W-Rr}" y1="${y(v)}" y2="${y(v)}" style="stroke:var(--grid)"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${o.pct?v+'%':fmt(v)}</text>`;
+  cols.forEach((c,i)=>{
+    const x=L+slot*i+(slot-bw)/2,cx=x+bw/2;let base=0;
+    s+=`<g data-tip="${esc(c.tip)}"><rect x="${L+slot*i}" y="${T-34}" width="${slot}" height="${ph+34}" fill="transparent"/>`;
+    c.segs.forEach(sg=>{if(!(sg.v>0))return;const top=base+sg.v;s+=`<rect x="${x}" y="${y(top)}" width="${bw}" height="${Math.max(1,y(base)-y(top))}" style="fill:${sg.color};opacity:${sg.op||1}"/>`;base=top;});
+    s+=`<text class="v" x="${cx}" y="${y(base)-22}" text-anchor="middle" style="font-size:${narrow?13:15}px">${c.top1}</text><text x="${cx}" y="${y(base)-7}" text-anchor="middle" style="font-size:12px">${c.top2}</text>`;
+    const ll=wrapLabel(c.label,maxc).slice(0,3);
+    ll.forEach((ln,k)=>{s+=`<text x="${cx}" y="${y(0)+20+k*15}" text-anchor="middle" style="fill:var(--ink2);font-weight:500;font-size:${narrow?11.5:13}px">${esc(ln)}</text>`;});
+    if(c.desc) wrapLabel(c.desc,Math.floor(maxc*1.15)).slice(0,2).forEach((ln,k)=>{s+=`<text x="${cx}" y="${y(0)+20+ll.length*15+4+k*13}" text-anchor="middle" style="font-size:11.5px">${esc(ln)}</text>`;});
+    s+='</g>';
+  });
+  el.innerHTML=s+'</svg>'; bindTips(el);
+}
+
+/* overview */
+function renderOv(){
+  const caps=[['dcr','DCR','Dynamic Client Registration endpoint found'],['cimd','CIMD','Client ID Metadata Documents supported']];
+  $('#h-cap-t').textContent=`${P(stat(R,'dcr').y,stat(R,'dcr').b)} support DCR, ${P(stat(R,'cimd').y,stat(R,'cimd').b)} support CIMD`;
+  $('#n-cap').textContent=`Share of ${baseWord()} where each capability was found. Blue is supported, grey is not found${baseMode==='all'?', amber is probe not completed':''}. Hover a column for the counts.`;
+  $('#lg-cap').innerHTML=`<span><i class="sw" style="background:${COL.y}"></i>Supported</span><span><i class="sw" style="background:${COL.n};opacity:.5"></i>Not found</span>`+(baseMode==='all'?`<span><i class="sw" style="background:${COL.x}"></i>Probe not completed</span>`:'');
+  const seg3=k=>{const y=R.filter(r=>r[k]==='Yes').length,n=R.filter(r=>r[k]==='No').length,x=R.length-y-n;return {y,n,x:baseMode==='all'?x:0};};
+  colChart($('#c-cap'),caps.map(([k,l,d])=>{const s3=seg3(k),tot=(s3.y+s3.n+s3.x)||1;
+    const t=`<b>${l}</b><br>Supported: ${fmt(s3.y)}<br>Not found: ${fmt(s3.n)}${baseMode==='all'?`<br>Probe not completed: ${fmt(s3.x)}`:''}`;
+    return {label:l,desc:d,tip:t,top1:P(s3.y,tot),top2:`${fmt(s3.y)} of ${fmt(tot)}`,segs:[{v:s3.y/tot*100,color:COL.y},{v:s3.n/tot*100,color:COL.n,op:.45},{v:s3.x/tot*100,color:COL.x}]};}),
+    {pct:true,desc:true,aria:'Share of endpoints supporting DCR and CIMD'});
+  // combination
+  const rowsB = baseMode==='done'?done(R):R;
+  const combos=[['Both DCR and CIMD',r=>r.dcr==='Yes'&&r.cimd==='Yes','var(--anthropic)','Supports both ways of registering a client'],['DCR only',r=>r.dcr==='Yes'&&r.cimd==='No','var(--community)','Clients register dynamically, no metadata-document option'],['CIMD only',r=>r.dcr==='No'&&r.cimd==='Yes','var(--partner)','Metadata documents work, but no registration endpoint'],['Neither',r=>r.dcr==='No'&&r.cimd==='No','var(--ink3)','Pre-registered clients only'],['Probe not completed',r=>r.status!=='Complete','var(--pc4)','No usable OAuth answer']].filter(c=>baseMode==='all'||c[0]!=='Probe not completed');
+  const cs=combos.map(([n,f,col,d])=>({n,col,d,v:rowsB.filter(f).length}));
+  const tot=rowsB.length;
+  $('#h-combo').textContent=`How DCR and CIMD combine: ${P(cs[0].v,tot)} support both, ${P(cs[3].v,tot)} support neither`;
+  $('#n-combo').textContent=`Each ${baseMode==='done'?'answering endpoint':'endpoint'} falls into exactly one of these groups. Hover a column for the counts.`;
+  $('#c-combo').innerHTML='<div id="c-combo-bars"></div>';
+  colChart($('#c-combo-bars'),cs.map(c=>({label:c.n,tip:`<b>${c.n}</b><br>${fmt(c.v)} endpoints · ${P(c.v,tot,1)}<br><span class="m">${c.d}</span>`,top1:fmt(c.v),top2:P(c.v,tot),segs:[{v:c.v,color:c.col}]})),{max:Math.max(1,...cs.map(c=>c.v)),bw:70,aria:'DCR and CIMD combinations'});
+  bindTips($('#c-combo'));
+  // DCR probe outcome
+  const dy=R.filter(r=>r.dcr==='Yes'), op=dy.filter(r=>r.dprobe==='open').length, ga=dy.filter(r=>r.dprobe==='gated').length, ot=dy.length-op-ga;
+  $('#h-probe').textContent = dy.length ? `Of ${fmt(dy.length)} endpoint${dy.length===1?'':'s'} that offer DCR, ${P(op,dy.length)} accepted a test registration` : 'No endpoint offers DCR, so no test registration was sent';
+  $('#n-probe').textContent=`The probe sent a registration request to each DCR endpoint. “Open” means it created a client (HTTP 200 or 201). “Gated or rejected” means it answered with an error, such as an invalid redirect URI or a missing scope, so DCR exists but is not freely usable. “No clear answer” covers everything else.`;
+  const pr=[['Open registration',op,'var(--community)'],['Gated or rejected',ga,'var(--partner)'],['No clear answer',ot,'var(--ink3)']].filter(x=>x[1]>0);
+  $('#c-probe').innerHTML='';
+  if(pr.length) colChart($('#c-probe'),pr.map(([n,v,c])=>({label:n,tip:`<b>${n}</b><br>${fmt(v)} endpoints · ${P(v,dy.length,1)}`,top1:fmt(v),top2:P(v,dy.length),segs:[{v,color:c}]})),{max:Math.max(...pr.map(x=>x[1])),aria:'Outcome of the DCR test registration'});
+}
+
+/* categories */
+function groups(){
+  const m=new Map();
+  R.forEach(r=>{const k=catOf(r); if(!k) return; if(!m.has(k)) m.set(k,[]); m.get(k).push(r);});
+  return [...m.entries()].map(([k,rows])=>({k,rows,level:lvlOf(k),name:catName(k),n:rows.length,nd:done(rows).length}));
+}
+function renderCat(){
+  let g=groups().filter(x=>baseN(x.rows)>=minN&&(lvF==='all'||x.level===lvF));
+  const unc=R.filter(r=>!catOf(r)).length;
+  const ov=stat(R.filter(r=>catOf(r)),metric);
+  g.forEach(x=>{x.s=stat(x.rows,metric);});
+  g.sort((a,b)=>b.s.p-a.s.p||b.n-a.n);
+  $('#h-cat-t').textContent = g.length ? `${P(ov.y,ov.b)} of categorised endpoints support ${MNAME[metric]}; ${g[0].name} is highest at ${P(g[0].s.y,g[0].s.b)} (${g[0].s.y} of ${g[0].s.b})` : 'By category';
+  $('#n-cat').textContent = `Percentage of ${baseWord()} in each category that support ${MNAME[metric]}. The amber tick marks the overall rate (${P(ov.y,ov.b)}). Categories with fewer than ${minN} ${baseWord()} are hidden, and ${fmt(unc)} endpoint${unc===1?'':'s'} without a category ${unc===1?'is':'are'} left out.`;
+  $('#c-cat').innerHTML=g.map(x=>{const s=x.s,t=`<b>${esc(x.name)}</b> (${x.level})<br>${fmt(x.n)} probed · ${fmt(x.nd)} completed<br>${['dcr','cimd','both','neither'].map(k=>`${MNAME[k]}: ${P(stat(x.rows,k).y,stat(x.rows,k).b)}`).join('<br>')}`;
+    return `<div class="row" data-tip="${esc(t)}"><div class="nm">${esc(x.name)}${chip(x.level)}</div><div class="tr" style="position:relative;overflow:visible"><div class="fl" style="width:${s.p*100}%;background:var(--community)"></div><div class="mk" style="left:calc(${ov.p*100}% - 1px)"></div></div><div class="nmb">${P(s.y,s.b)}<span>${fmt(s.y)}/${fmt(s.b)}</span></div></div>`;}).join('') || '<div class="row"><div class="nm">No categories match</div></div>';
+  bindTips($('#c-cat'));
+}
+const COLS=[['name','Category',false],['n','Probed',true],['nd','Completed',true],['dcr','DCR',true],['cimd','CIMD',true],['both','Both',true],['neither','Neither',true]];
+function renderTbl(){
+  let g=groups().filter(x=>baseN(x.rows)>=minN&&(lvF==='all'||x.level===lvF));
+  g.forEach(x=>{['dcr','cimd','both','neither'].forEach(k=>x[k]=stat(x.rows,k));});
+  const val=(x,k)=>['dcr','cimd','both','neither'].includes(k)?x[k].p:(k==='name'?x.name.toLowerCase():x[k]);
+  g.sort((a,b)=>{const va=val(a,sortKey),vb=val(b,sortKey);return (va<vb?-1:va>vb?1:0)*(sortAsc?1:-1)||b.n-a.n;});
+  let h=`<thead><tr>${COLS.map(([k,l])=>`<th data-k="${k}" class="${sortKey===k?'on'+(sortAsc?' asc':''):''}">${l}</th>`).join('')}</tr></thead><tbody>`;
+  g.forEach(x=>{h+=`<tr><td>${esc(x.name)}${chip(x.level)}</td><td>${fmt(x.n)}</td><td>${fmt(x.nd)}</td>`+['dcr','cimd','both','neither'].map(k=>{const s=x[k],a=(.06+s.p*.85).toFixed(2);return `<td class="h ${a>.55?'hi':''}" style="--a:${a}">${P(s.y,s.b)}<small>${fmt(s.y)}</small></td>`;}).join('')+'</tr>';});
+  $('#t-cat').innerHTML=h+'</tbody>';
+  $('#t-cat').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k; if(sortKey===k) sortAsc=!sortAsc; else {sortKey=k;sortAsc=k==='name';} renderTbl();});
+}
+seg('#seg-met',v=>{metric=v;renderCat();});
+seg('#seg-lvl',v=>{lvF=v;renderCat();renderTbl();});
+seg('#seg-src',v=>{srcMode=v;renderCat();renderTbl();fillCatSel();});
+$('#s-min').onchange=e=>{minN=+e.target.value;renderCat();renderTbl();};
+
+/* tier + cohort */
+const heatCell=(rows,k)=>{const s=stat(rows,k),a=(.06+s.p*.85).toFixed(2);return `<td class="h ${a>.55?'hi':''}" style="--a:${a}">${P(s.y,s.b)}<small>${fmt(s.y)}</small></td>`;};
+function renderTier(){
+  const tiers=['partner','community','anthropic'].map(t=>({t,rows:R.filter(r=>r.tier===t)})).filter(x=>x.rows.length);
+  const d=stat(R.filter(r=>r.tier==='partner'),'dcr'), c=stat(R.filter(r=>r.tier==='community'),'dcr');
+  $('#h-tier-t').textContent = d.b&&c.b ? `By tier: DCR support is ${P(d.y,d.b)} for Verified connectors and ${P(c.y,c.b)} for Community` : 'By tier';
+  const unm=R.filter(r=>!r.tier).length;
+  $('#n-tier').textContent=`Verified connectors were cleared by a reviewer; Community connectors are listed without review; Anthropic connectors are made by Anthropic.${unm?` ${fmt(unm)} endpoint${unm===1?' was':'s were'} not matched to a connector in the directory, so ${unm===1?'it has':'they have'} no tier.`:''}`;
+  $('#t-tier').innerHTML=`<thead><tr><th>Tier</th><th>Probed</th><th>Completed</th><th>DCR</th><th>CIMD</th><th>Both</th></tr></thead><tbody>${tiers.map(x=>`<tr><td><b>${TIERN[x.t]}</b></td><td>${fmt(x.rows.length)}</td><td>${fmt(done(x.rows).length)}</td>${['dcr','cimd','both'].map(k=>heatCell(x.rows,k)).join('')}</tr>`).join('')}</tbody>`;
+  // cohort
+  const months=[...new Set(R.map(r=>r.added).filter(Boolean))].sort();
+  const coh=months.map(m=>({m,rows:R.filter(r=>r.added===m)}));
+  const first=coh.find(x=>x.rows.length>=15), last=[...coh].reverse().find(x=>x.rows.length>=15);
+  $('#h-coh').textContent = first&&last&&first!==last ? `By launch month: CIMD support is ${P(stat(first.rows,'cimd').y,stat(first.rows,'cimd').b)} for ${mlabel(first.m)} launches and ${P(stat(last.rows,'cimd').y,stat(last.rows,'cimd').b)} for ${mlabel(last.m)}` : 'By launch month';
+  $('#n-coh').textContent=`Connectors grouped by the month they were added to the directory. Months with fewer than 15 probed endpoints are faded because a few endpoints can swing the percentages.`;
+  const el=$('#c-coh'),W=Math.max(320,el.clientWidth||900),H=W<520?260:300,L=38,Rr=8,T=18,B=34,pw=W-L-Rr,ph=H-T-B,n=coh.length,slot=pw/Math.max(1,n),bw=Math.max(5,Math.min(22,slot*.3));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="DCR and CIMD support by launch month">`;
+  for(let v=0;v<=100;v+=25) s+=`<line x1="${L}" x2="${W-Rr}" y1="${T+ph-v/100*ph}" y2="${T+ph-v/100*ph}" style="stroke:var(--grid)"/><text x="${L-8}" y="${T+ph-v/100*ph+4}" text-anchor="end">${v}%</text>`;
+  coh.forEach((x,i)=>{const cx=L+slot*i+slot/2,small=x.rows.length<15,sd=stat(x.rows,'dcr'),sc=stat(x.rows,'cimd');
+    const t=`<b>${mlabel(x.m)}</b><br>${fmt(x.rows.length)} probed<br>DCR ${P(sd.y,sd.b)} (${sd.y}/${sd.b})<br>CIMD ${P(sc.y,sc.b)} (${sc.y}/${sc.b})`;
+    s+=`<g data-tip="${esc(t)}" style="opacity:${small?.5:1}"><rect x="${L+slot*i}" y="${T}" width="${slot}" height="${ph}" fill="transparent"/>`;
+    [[sd.p,'--community',-1],[sc.p,'--partner',1]].forEach(([p,c,d])=>{const x0=d<0?cx-bw-1:cx+1;s+=`<rect x="${x0}" y="${T+ph-p*ph}" width="${bw}" height="${Math.max(1,p*ph)}" rx="2" style="fill:var(${c})"/>`;});
+    if(!(W<520&&i%2)) s+=`<text x="${cx}" y="${H-12}" text-anchor="middle" style="font-size:${W<520?10:12}px">${MN[+x.m.slice(5,7)-1]}${x.m.slice(5,7)==='01'||i===0?' ’'+x.m.slice(2,4):''}</text>`;
+    s+='</g>';});
+  el.innerHTML=s+'</svg>'; bindTips(el);
+  $('#t-coh').innerHTML=`<thead><tr><th>Launch month</th><th>Probed</th><th>Completed</th><th>DCR</th><th>CIMD</th></tr></thead><tbody>${coh.map(x=>`<tr style="opacity:${x.rows.length<15?.6:1}"><td>${mlabel(x.m)}</td><td>${fmt(x.rows.length)}</td><td>${fmt(done(x.rows).length)}</td>${['dcr','cimd'].map(k=>heatCell(x.rows,k)).join('')}</tr>`).join('')}</tbody>`;
+}
+
+/* issues */
+function renderIss(){
+  const nc=R.filter(r=>r.status!=='Complete'), reasons={};
+  nc.forEach(r=>{reasons[r.reason||'Unknown']=(reasons[r.reason||'Unknown']||0)+1;});
+  const ent=Object.entries(reasons).sort((a,b)=>b[1]-a[1]);
+  $('#h-iss').textContent = nc.length ? `${fmt(nc.length)} of ${fmt(R.length)} probes (${P(nc.length,R.length)}) did not complete` : `All ${fmt(R.length)} probes completed`;
+  $('#n-iss').textContent = nc.length ? `The most common reason was “${ent[0][0]}” (${fmt(ent[0][1])}). Endpoints with no OAuth metadata usually use no OAuth or a different scheme. Blocked or timed-out probes mean the real support is unknown.` : 'Every endpoint returned a usable OAuth answer, so there are no incomplete probes to explain. The checks below describe how the completed probes behaved.';
+  const cm=R.filter(r=>r.status==='Complete');
+  const noPrm=cm.filter(r=>!r.prm).length, keyAuth=cm.filter(r=>r.auth==='Key').length, noAuth=cm.filter(r=>!r.auth).length;
+  $('#chips-iss').innerHTML=[[nc.length,'probes not completed'],[noPrm,'completed without protected-resource metadata'],[keyAuth,'use API-key style authentication'],[cm.filter(r=>r.http==='401').length,'returned the expected HTTP 401 challenge']].map(([n,l])=>`<div class="chip"><div class="n">${fmt(n)}</div><div class="l">${l}</div></div>`).join('');
+  const mx=Math.max(...ent.map(x=>x[1]));
+  $('#c-iss').innerHTML=ent.map(([k,v])=>`<div class="row" style="grid-template-columns:330px 1fr 110px"><div class="nm" style="white-space:normal">${esc(k)}</div><div class="tr"><div class="fl" style="width:${v/mx*100}%;background:var(--partner)"></div></div><div class="nmb">${fmt(v)}<span>${P(v,nc.length)}</span></div></div>`).join('');
+  const pv={}; R.forEach(r=>{if(r.prov){(pv[r.prov]=pv[r.prov]||[]).push(r);}});
+  const nprov=Object.values(pv).reduce((a,x)=>a+x.length,0);
+  $('#n-prov').textContent = nprov ? `${fmt(nprov)} endpoint${nprov===1?'':'s'} exposed a recognisable identity provider in ${nprov===1?'its':'their'} responses. Most authorisation servers are run by the connector’s own company, so this is a small slice.` : 'No endpoint exposed a recognisable identity provider in its responses. Most authorisation servers are run by the connector’s own company.';
+  $('#n-nc').textContent = nc.length ? 'Each of these endpoints returned no usable OAuth answer, so their DCR and CIMD columns are blank, not “No”.' : 'None. Every probe returned a usable OAuth answer.';
+  $('#p-nc').hidden = !nc.length;
+  $('#t-prov').innerHTML=`<thead><tr><th>Provider</th><th>Endpoints</th><th>DCR</th><th>CIMD</th></tr></thead><tbody>${Object.entries(pv).sort((a,b)=>b[1].length-a[1].length).map(([k,rows])=>`<tr><td><b>${esc(k)}</b></td><td>${rows.length}</td>${heatCell(rows,'dcr')}${heatCell(rows,'cimd')}</tr>`).join('')}</tbody>`;
+  $('#t-nc').innerHTML=`<thead><tr><th>Endpoint</th><th style="text-align:left">Reason</th><th>HTTP</th>${HAS_DIR?'<th>Tier</th>':''}${HAS_CAT?'<th style="text-align:left">Category</th>':''}</tr></thead><tbody>${nc.sort((a,b)=>a.name.localeCompare(b.name)).map(r=>`<tr><td style="text-align:left"><b>${esc(r.name)}</b></td><td style="text-align:left;white-space:normal">${esc(r.reason||'')}</td><td>${esc(r.http||'–')}</td>${HAS_DIR?`<td>${TIERN[r.tier]||'–'}</td>`:''}${HAS_CAT?`<td style="text-align:left">${r.cat?esc(catName(r.cat)):'–'}</td>`:''}</tr>`).join('')}</tbody>`;
+  $('#t-nc td:first-child');
+}
+
+/* all endpoints */
+function fillCatSel(){const keys=[...new Set(R.map(catOf).filter(Boolean))].sort((a,b)=>catName(a).localeCompare(catName(b)));const cur=$('#f-cat').value;
+  $('#f-cat').innerHTML='<option value="">All categories</option>'+keys.map(k=>`<option value="${esc(k)}">${esc(catName(k))} (${lvlOf(k)})</option>`).join('');$('#f-cat').value=keys.includes(cur)?cur:'';}
+const yt=v=>v==='Yes'?'<span class="ytag y">Yes</span>':v==='No'?'<span class="ytag n">No</span>':'<span class="ytag x">–</span>';
+function renderAll(){
+  const q=$('#f-q').value.trim().toLowerCase(),fc=$('#f-cat').value,ft=$('#f-tier').value,fd=$('#f-dcr').value,fm=$('#f-cimd').value;
+  const rows=R.filter(r=>(!q||r.name.toLowerCase().includes(q)||r.url.toLowerCase().includes(q))&&(!fc||catOf(r)===fc)&&(!ft||r.tier===ft)&&(!fd||(fd==='NA'?!r.dcr:r.dcr===fd))&&(!fm||r.cimd===fm)).sort((a,b)=>a.name.localeCompare(b.name));
+  $('#n-all').textContent=`${fmt(rows.length)} of ${fmt(R.length)} endpoints shown. “–” means the probe did not complete.${D.model?' A “~” after a category means the category is estimated.':''}`;
+  $('#t-all').innerHTML=`<thead><tr><th style="text-align:left">Endpoint</th>${HAS_CAT?'<th style="text-align:left">Category</th>':''}${HAS_DIR?'<th>Tier</th>':''}<th>DCR</th><th>CIMD</th><th>DCR test registration</th></tr></thead><tbody>${rows.map(r=>{const k=catOf(r);return `<tr><td style="text-align:left;white-space:normal"><b>${esc(r.name)}</b></td>${HAS_CAT?`<td style="text-align:left">${k?esc(catName(k))+chip(lvlOf(k))+(r.catSrc==='pred'?'<span class="est2">~</span>':''):'–'}</td>`:''}${HAS_DIR?`<td>${TIERN[r.tier]||'–'}</td>`:''}<td>${yt(r.dcr)}</td><td>${yt(r.cimd)}</td><td>${r.dprobe==='open'?'Open':r.dprobe==='gated'?'Gated':'–'}</td></tr>`;}).join('')}</tbody>`;
+}
+['#f-q','#f-cat','#f-tier','#f-dcr','#f-cimd'].forEach(s=>$(s).addEventListener(s==='#f-q'?'input':'change',renderAll));
+
+/* base toggle + dispatch */
+function renderTab(){ renderHeader(); if(curTab==='ov') renderOv(); if(curTab==='cat'){renderCat();renderTbl();} if(curTab==='tier') renderTier(); if(curTab==='iss') renderIss(); if(curTab==='all') renderAll(); }
+seg('#seg-base',v=>{baseMode=v;renderTab();});
+
+fillCatSel(); renderTab();
+if (OV_ONLY) ['cat','tier','iss','all'].forEach(t => $('#tab-'+t).remove());
+$('#dl').addEventListener('click', async () => {
+  let text;
+  try {
+    const r = await fetch(location.href);
+    if (!r.ok) throw new Error('fetch failed');
+    text = await r.text();
+    if (!text.includes('const D =')) throw new Error('unexpected content');
+  } catch (e) {
+    text = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  }
+  const url = URL.createObjectURL(new Blob([text], {type: 'text/html;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mcp_auth_discovery_report_' + (D.asof || '') + '.html';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+});
+let rt; new ResizeObserver(()=>{clearTimeout(rt);rt=setTimeout(()=>{if(curTab==='tier')renderTier();if(curTab==='ov')renderOv();},120);}).observe(document.body);
+</script></body></html>

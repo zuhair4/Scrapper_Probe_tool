@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Claude connector directory: launch pace and categories (official taxonomy)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6FA;--surface:#FFFFFF;--ink:#101828;--ink2:#475467;--ink3:#7A8499;--line:#E1E7F0;--grid:#E9EDF4;--track:#EDF1F7;
+  --community:#4263EB;--partner:#F59F00;--anthropic:#12B886;--first:#AE3EC9;--up:#0CA678;--down:#E8590C;
+  --heat:66,99,235;--on-heat:#FFFFFF;--shadow:0 1px 2px rgba(16,24,40,.04);
+  color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C111B;--surface:#141B29;--ink:#EEF2F8;--ink2:#A7B1C4;--ink3:#7B879D;--line:#243048;--grid:#1E283B;--track:#1B2436;
+    --community:#7C93FF;--partner:#FFB627;--anthropic:#3DDBA9;--first:#D98BF0;--up:#3DDBA9;--down:#FF8A4C;
+    --heat:124,147,255;--on-heat:#0C111B;--shadow:none;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C111B;--surface:#141B29;--ink:#EEF2F8;--ink2:#A7B1C4;--ink3:#7B879D;--line:#243048;--grid:#1E283B;--track:#1B2436;
+  --community:#7C93FF;--partner:#FFB627;--anthropic:#3DDBA9;--first:#D98BF0;--up:#3DDBA9;--down:#FF8A4C;
+  --heat:124,147,255;--on-heat:#0C111B;--shadow:none;color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 24px 72px}
+h1,h2{font-family:"Bricolage Grotesque","Figtree",system-ui,sans-serif;font-weight:700;letter-spacing:-.02em;margin:0}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.06;max-width:18ch}
+.sub{color:var(--ink3);font-size:14px;margin:14px 0 0}
+.lede{font-size:clamp(17px,2vw,20px);line-height:1.5;color:var(--ink2);max-width:62ch;margin:20px 0 0}
+.lede b{color:var(--ink);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:36px 0 0}
+.kpi{background:var(--surface);padding:20px 22px}
+.kpi .n{font-family:"Bricolage Grotesque","Figtree",sans-serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);letter-spacing:-.02em;line-height:1.05}
+.kpi .l{font-weight:600;font-size:14px;margin-top:8px}
+.kpi .d{color:var(--ink3);font-size:13px;margin-top:4px}
+section{margin-top:56px}
+.head{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:6px}
+h2{font-size:clamp(21px,2.6vw,28px);line-height:1.18;max-width:34ch}
+.note{color:var(--ink2);font-size:15px;margin:8px 0 18px;max-width:70ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 20px 14px;box-shadow:var(--shadow)}
+.seg{display:inline-flex;background:var(--track);border-radius:10px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:13.5px;font-weight:500;color:var(--ink2);background:transparent;border:0;border-radius:8px;padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.info{position:relative;display:inline-flex;flex:none;width:16px;height:16px;margin-left:6px;vertical-align:middle;top:-1px;border-radius:50%;color:var(--ink3);cursor:help;transition:color .15s,background-color .15s}
+.info svg{display:block;width:100%;height:100%}
+.info:hover,.info:focus{color:var(--community);background:color-mix(in srgb,var(--community) 12%,transparent);outline:0}
+.info:focus-visible{box-shadow:0 0 0 2px var(--community)}
+h2 .info{width:18px;height:18px;margin-left:8px;top:-2px}
+.seg button .info{width:14px;height:14px;margin-left:4px;top:-1px}
+.info::after,.info::before{position:absolute;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .15s,transform .15s;transform:translateY(-4px);z-index:30}
+.info::after{content:attr(data-help);top:calc(100% + 11px);left:-10px;width:min(320px,80vw);padding:11px 13px;border-radius:10px;background:var(--ink);color:var(--surface);font-family:"Figtree",system-ui,sans-serif;font-size:13px;font-weight:400;font-style:normal;letter-spacing:normal;line-height:1.5;text-align:left;white-space:pre-line;box-shadow:0 8px 24px rgba(16,24,40,.28)}
+.info::before{content:"";top:calc(100% + 5px);left:50%;margin-left:-6px;width:12px;height:12px;background:var(--ink);border-radius:2px;rotate:45deg}
+.info.r::after{left:auto;right:-10px}
+.info:hover::after,.info:hover::before,.info:focus::after,.info:focus::before{opacity:1;visibility:visible;transform:none}
+.seg button:focus-visible,.row:focus-visible{outline:2px solid var(--community);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink2);margin:0 0 6px}
+.legend span[data-tier],.tt th[data-tier]{cursor:help;text-decoration:underline dotted;text-decoration-color:var(--ink3);text-decoration-thickness:1.5px;text-underline-offset:4px}
+.legend span[data-tier]:hover,.tt th[data-tier]:hover{text-decoration-color:var(--ink);color:var(--ink)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:"Figtree",system-ui,sans-serif;fill:var(--ink3);font-size:12px}
+svg .v{fill:var(--ink);font-weight:600}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+/* ranking */
+.rank{display:flex;flex-direction:column;gap:2px}
+.row{display:grid;grid-template-columns:210px 1fr 110px;align-items:center;gap:12px;padding:7px 8px;border-radius:8px;cursor:default}
+.row:hover{background:var(--track)}
+.row .nm{font-size:14.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .tr{height:14px;background:var(--track);border-radius:7px;overflow:hidden}
+.row:hover .tr{background:var(--surface)}
+.row .fl{height:100%;background:var(--community);border-radius:7px;transition:width .35s ease}
+.row .nmb{text-align:right;font-size:14px;font-weight:600}
+.row .nmb span{color:var(--ink3);font-weight:400;margin-left:6px}
+/* heatmap */
+.hm{overflow-x:auto}
+.hm table{border-collapse:separate;border-spacing:3px;width:100%;min-width:560px}
+.hm th{font-size:13px;font-weight:600;color:var(--ink2);padding:4px 6px;text-align:center}
+.hm th:first-child{text-align:left}
+.hm td.rl{font-size:14px;font-weight:500;padding:0 10px 0 0;white-space:nowrap;width:215px}
+.hm td.c{text-align:center;font-size:13px;font-weight:600;height:36px;border-radius:7px;background:rgba(var(--heat),var(--a));color:var(--ink)}
+.hm td.c.hi{color:var(--on-heat)}
+.hm td.c.top{box-shadow:inset 0 0 0 2px var(--partner)}
+.hmnote{font-size:13px;color:var(--ink3);margin:10px 0 4px}
+.hmnote i{display:inline-block;width:12px;height:12px;border-radius:3px;box-shadow:inset 0 0 0 2px var(--partner);vertical-align:-2px;margin-right:6px}
+/* diverging */
+.dv{display:grid;grid-template-columns:210px 1fr 74px;align-items:center;gap:12px;padding:6px 8px}
+.dv .nm{font-size:14.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dv .ar{position:relative;height:16px}
+.dv .ar::before{content:"";position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:var(--ink3);opacity:.5}
+.dv .bar{position:absolute;top:0;height:100%;border-radius:4px}
+.dv .vl{font-size:14px;font-weight:600;text-align:right}
+.axl{display:grid;grid-template-columns:210px 1fr 74px;gap:12px;padding:0 8px 8px;font-size:12.5px;color:var(--ink3)}
+.axl div:nth-child(2){display:flex;justify-content:space-between}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);padding:9px 12px;border-radius:9px;font-size:13px;line-height:1.45;max-width:280px;opacity:0;transition:opacity .08s}
+#tip b{font-weight:600}#tip .m{opacity:.7}
+@media (max-width:860px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .cols2{grid-template-columns:1fr}
+  .row{grid-template-columns:1fr 100px;grid-template-areas:"nm nmb" "tr tr";gap:4px 12px}
+  .row .nm{grid-area:nm}.row .tr{grid-area:tr}.row .nmb{grid-area:nmb}
+  .dv,.axl{grid-template-columns:130px 1fr 60px;gap:8px}
+  .hm td.rl{width:150px;white-space:normal;font-size:13px}
+}
+@media (max-width:520px){.wrap{padding:28px 16px 56px}.panel{padding:16px 12px 10px}}
+@media (prefers-reduced-motion:reduce){.row .fl{transition:none}}
+
+.kpis.three{grid-template-columns:repeat(4,1fr)}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px}
+.chip{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.chip .n{font-family:"Bricolage Grotesque","Figtree",sans-serif;font-weight:700;font-size:26px;line-height:1.1}
+.chip .l{font-size:13px;color:var(--ink2);margin-top:4px}
+.chip.z .n{color:var(--ink3)}
+.lists{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.lists h3{font-family:"Bricolage Grotesque","Figtree",sans-serif;font-size:16px;margin:0 0 8px}
+.mini{width:100%;border-collapse:collapse;font-size:14px}
+.mini td{padding:7px 4px;border-top:1px solid var(--line)}
+.mini td:last-child{text-align:right;font-weight:600;white-space:nowrap}
+.arrow{color:var(--ink3);margin:0 4px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--track);color:var(--ink2)}
+.pill.p{background:rgba(245,159,0,.18);color:var(--ink)}
+.pill.c{background:rgba(var(--heat),.16);color:var(--ink)}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 12px}
+.filters select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+.tw{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.tw table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+.tw th{position:sticky;top:0;background:var(--surface);text-align:left;font-size:12.5px;color:var(--ink3);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line)}
+.tw td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tw td.s{color:var(--ink2);font-size:13px;max-width:360px}
+.mk{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--partner);border-radius:1px}
+.trk{position:relative}
+@media (max-width:860px){.kpis.three{grid-template-columns:1fr 1fr}.lists{grid-template-columns:1fr}}
+
+:root{--life:#AE3EC9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--life:#DA77F2}}
+:root[data-theme="dark"]{--life:#DA77F2}
+.lv{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:99px;margin-left:8px;vertical-align:1px;color:var(--ink)}
+.lv-dept{background:color-mix(in srgb,var(--community) 20%,transparent)}
+.lv-industry{background:color-mix(in srgb,var(--anthropic) 24%,transparent)}
+.lv-life{background:color-mix(in srgb,var(--life) 22%,transparent)}
+.rank.wide .row,.dv.w{grid-template-columns:270px 1fr 110px}
+.dv.w{grid-template-columns:270px 1fr 74px}
+.axl.w{grid-template-columns:270px 1fr 74px}
+.hm td.rl{width:270px}
+.banner{border:1px solid var(--partner);background:color-mix(in srgb,var(--partner) 10%,transparent);border-radius:12px;padding:14px 18px;margin:28px 0 0;font-size:15px;color:var(--ink)}
+.banner b{font-weight:600}
+.est{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;border:1px dashed var(--ink3);color:var(--ink2);margin-left:10px;vertical-align:3px}
+.sel{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:14px;color:var(--ink2);margin-bottom:12px}
+.sel select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:6px 10px}
+.morebtn{font:inherit;font-size:14px;font-weight:500;color:var(--ink2);background:var(--track);border:0;border-radius:9px;padding:8px 14px;margin:10px 0 4px 8px;cursor:pointer}
+.stack{display:flex;gap:6px;flex-wrap:wrap}
+.hm th.thin{opacity:.6}.hm td.c.thin{opacity:.55}
+.nrow td{font-size:12.5px;color:var(--ink3);text-align:center;padding:2px 4px}
+@media (max-width:860px){.rank.wide .row{grid-template-columns:1fr 100px}.dv.w,.axl.w{grid-template-columns:150px 1fr 60px}.hm td.rl{width:170px}}
+
+.ctr{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+
+.tabs{display:flex;gap:6px;margin:36px 0 0;border-bottom:1px solid var(--line)}
+.tabs button{font:inherit;font-size:15px;font-weight:600;color:var(--ink2);background:transparent;border:0;border-bottom:3px solid transparent;padding:10px 16px;margin-bottom:-1px;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--community)}
+.tabs button:focus-visible{outline:2px solid var(--community);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+.tt-wrap{overflow-x:auto}
+.tt{width:100%;border-collapse:collapse;min-width:640px;font-size:15px}
+.tt th{text-align:right;font-size:13px;font-weight:600;color:var(--ink2);padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:bottom;white-space:nowrap}
+.tt th:first-child,.tt td:first-child{text-align:left}
+.tt th small{display:block;font-weight:400;color:var(--ink3);font-size:11.5px;white-space:normal;max-width:150px;margin-left:auto}
+.tt th i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.tt td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.tt td b{font-weight:600}.tt td span{color:var(--ink3);font-size:12.5px;margin-left:7px}
+.tt td.mix{width:170px}
+.mixbar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--track);margin-left:auto;width:150px}
+.tt tr.zero td{color:var(--ink3);font-style:italic}
+.tt tr:hover td{background:var(--track)}
+.tt tfoot td{font-weight:700;border-top:2px solid var(--line);border-bottom:0}
+.tt td.big b{font-size:16px}
+.toolbar{display:flex;justify-content:flex-end;margin:-16px 0 14px}
+.dlbtn{font:inherit;font-size:14px;font-weight:600;color:var(--bg);background:var(--ink);border:0;border-radius:9px;padding:9px 16px;cursor:pointer}
+.dlbtn:hover{opacity:.88}.dlbtn:focus-visible{outline:2px solid var(--community);outline-offset:2px}
+@media print{.toolbar{display:none}}
+</style>
+</head><body>
+<div class="wrap">
+  <div class="toolbar"><button id="dl" type="button" class="dlbtn">Download report</button></div>
+  <header>
+    <h1>Claude connector directory: launch pace and categories</h1>
+    <p class="lede" id="lede"></p>
+  </header>
+  <div class="kpis" id="kpis"></div>
+  <div class="tabs" role="tablist" aria-label="Dashboard views">
+    <button role="tab" id="tab-btn-main" data-tab="main" aria-selected="true">Launch pace and categories</button>
+    <button role="tab" id="tab-btn-tier" data-tab="tier" aria-selected="false">Tier comparison by month</button>
+  </div>
+  <div id="tab-main" role="tabpanel" aria-labelledby="tab-btn-main">
+
+  <section>
+    <div class="head"><h2 id="h-month"></h2>
+      <div class="seg" role="group" aria-label="Monthly chart view" id="seg-month"><button aria-pressed="true" data-v="party">First party and 3rd party</button><button aria-pressed="false" data-v="tier">By verification tier</button><button aria-pressed="false" data-v="total">Total</button></div></div>
+    <p class="note" id="n-month"></p>
+    <div class="panel"><div class="legend" id="lg-month"></div><div id="c-month"></div></div>
+  </section>
+
+  <section>
+    <div class="head"><h2 id="h-day"></h2></div>
+    <div class="panel"><div id="c-day"></div></div>
+  </section>
+
+  <div class="banner" id="banner-cat" style="margin-top:56px">
+    <b>How categories work below.</b> Each connector is labelled by the directory’s own taxonomy: work department first, then industry, then life area. Connectors with none of these (including those the directory only tags with an object acted on) are shown as Uncategorized in the first chart below. The heatmap and the gained-or-lost chart count only categorised launches, so the most recent launches can look thin there.
+  </div>
+
+  <section style="margin-top:32px">
+    <div class="head"><h2 id="h-cat">Category Breakdown of Connector Launches</h2>
+      <div class="seg" role="group" aria-label="Period" id="seg-rank"><button aria-pressed="true" data-v="prev">Last month</button><button aria-pressed="false" data-v="q">Last 3 months</button><button aria-pressed="false" data-v="all">All dated</button></div></div>
+    <div class="ctr" style="margin:8px 0 6px"><div class="seg" role="group" aria-label="Taxonomy level" id="seg-lvl" style="flex-wrap:wrap"><button aria-pressed="true" data-v="all">All categories</button><button aria-pressed="false" data-v="dept">Departments</button><button aria-pressed="false" data-v="industry">Industries</button></div></div>
+    <p class="note" id="n-rank"></p>
+    <div class="panel"><div class="rank wide" id="c-rank"></div><div id="more-wrap"></div></div>
+  </section>
+
+  <section>
+    <div class="head"><h2>Leading Categories by Month</h2>
+      <div class="ctr"><div class="seg" role="group" aria-label="Heatmap category type" id="seg-hmlvl"><button aria-pressed="true" data-v="all">All categories</button><button aria-pressed="false" data-v="dept">Departments</button><button aria-pressed="false" data-v="industry">Industries</button></div><div class="seg" role="group" aria-label="Heatmap values" id="seg-hm"><button aria-pressed="true" data-v="share">Share of month</button><button aria-pressed="false" data-v="count">Launch count</button></div></div></div>
+    <p class="note" id="n-hm"></p>
+    <div class="panel"><div class="hm" id="c-hm"></div><div class="hmnote" id="hmnote"><i></i>Top three categories in that month. <span id="hm-cov"></span></div></div>
+  </section>
+
+  <section>
+    <div class="head"><h2 id="h-dv"></h2>
+      <div class="seg" role="group" aria-label="Category type" id="seg-dvlvl"><button aria-pressed="true" data-v="all">All categories</button><button aria-pressed="false" data-v="dept">Departments</button><button aria-pressed="false" data-v="industry">Industries</button></div></div>
+    <div class="sel"><span>Compare</span><select id="s-to" aria-label="Later period"></select><span>with</span><select id="s-from" aria-label="Earlier period"></select></div>
+    <p class="note" id="n-dv"></p>
+    <div class="panel"><div class="axl w"><div></div><div><span>← losing share</span><span>gaining share →</span></div><div></div></div><div id="c-dv"></div></div>
+  </section>
+
+  
+</div>
+<div id="tab-tier" hidden role="tabpanel" aria-labelledby="tab-btn-tier">
+  <section style="margin-top:40px">
+    <div class="head"><h2 id="h-tier"></h2></div>
+    <p class="note" id="n-tier"></p>
+    <div class="panel"><div class="tt-wrap" id="c-tier"></div></div>
+  </section>
+</div>
+
+  
+</div>
+<div id="tip" role="tooltip"></div>
+<script>
+const D = /*__REPORT_DATA__*/null;
+const $ = s => document.querySelector(s);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const mlabel = (m, long) => { const [y,mo] = m.split('-'); return MN[+mo-1] + (long ? ' ' + y : ''); };
+const M = D.months, idx = m => M.indexOf(m);
+
+const SP={'hr':'HR','it-security':'IT & security','retail-ecommerce':'Retail & e-commerce','financial-services':'Financial services','health-life-sciences':'Health & life sciences','software-saas':'Software & SaaS','media-entertainment':'Media & entertainment','research-academia':'Research & academia','travel-hospitality':'Travel & hospitality','agencies-staffing':'Agencies & staffing','transportation-logistics':'Transportation & logistics','fitness-wellness':'Fitness & wellness','real-estate':'Real estate','customer-support':'Customer support','ai-models-agents':'AI models & agents','files-documents':'Files & documents','designs-media':'Designs & media','notes-memory':'Notes & memory','tickets-tasks':'Tickets & tasks','email-messages':'Email & messages','contacts-leads':'Contacts & leads','reference-docs':'Reference docs','events-tickets':'Events & tickets','papers-articles':'Papers & articles','logs-errors':'Logs & errors','courses-lessons':'Courses & lessons','recipes-meals':'Recipes & meals','workouts-health-records':'Workouts & health records','social-media':'Social media','work-career':'Work & career','events-going-out':'Events & going out','books-reading':'Books & reading','family-relationships':'Family & relationships','volunteering-giving':'Volunteering & giving','maps-transit':'Maps & transit','beauty-grooming':'Beauty & grooming','film-tv':'Film & TV','arts-crafts':'Arts & crafts','philosophy-religion':'Philosophy & religion','politics-government':'Politics & government','maths':'Maths','nonprofit':'Nonprofit'};
+const pretty = r => SP[r] || (r.charAt(0).toUpperCase()+r.slice(1).replace(/-/g,' '));
+const LV = {dept:['Dept','--community'],industry:['Industry','--anthropic'],life:['Life','--life']};
+const chip = l => `<span class="lv lv-${l}">${LV[l][0]}</span>`;
+
+/* ---------- derived numbers ---------- */
+const CUR = D.asof.slice(0,7), ci = idx(CUR);
+const FULLN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const mName = m => FULLN[+m.slice(5,7)-1], mShort = m => MN[+m.slice(5,7)-1];
+const dim = m => new Date(Date.UTC(+m.slice(0,4), +m.slice(5,7), 0)).getUTCDate();
+const ordinal = n => n+(n%10===1&&n!==11?'st':n%10===2&&n!==12?'nd':n%10===3&&n!==13?'rd':'th');
+const q3 = [M[ci-3],M[ci-2],M[ci-1]], P4 = M[ci-4];
+const curName = mName(CUR), q3Range = mName(q3[0])+' to '+mName(q3[2]), q3Short = mShort(q3[0])+'–'+mShort(q3[2]);
+const q3Avg = q3.reduce((a,m) => a + D.tot[idx(m)], 0) / 3;
+const octTot = D.tot[ci];
+const daily = D.daily.map(([d,n]) => ({d, n, dt: new Date(d + 'T12:00:00Z')}));
+const lastDay = daily[daily.length-1];
+const octFull = daily.filter(x => x.d >= CUR+'-01' && x.d < lastDay.d);
+const octFullSum = octFull.reduce((a,x) => a + x.n, 0);
+const octPerDay = octFull.length ? octFullSum / octFull.length : 0;
+const _l7 = daily.filter(x=>x.d<lastDay.d).slice(-7), _l7Avg = _l7.reduce((t,x)=>t+x.n,0)/(_l7.length||1);
+const octProj = octFullSum + (dim(CUR)-octFull.length)*_l7Avg;
+const augPerDay = D.tot[idx(q3[1])] / dim(q3[1]);
+const isWknd = x => [0,6].includes(x.dt.getUTCDay());
+const JO=[q3[0],q3[1],q3[2],CUR];
+const commJO = JO.reduce((a,m)=>a+D.tiers.community[idx(m)],0), totJO = JO.reduce((a,m)=>a+D.tot[idx(m)],0), commShare = commJO/totJO;
+const verJO = JO.reduce((a,m)=>a+D.tiers.partner[idx(m)],0);
+const zeroMonths = M.filter((m,i)=>D.tot[i]===0&&i>0&&i<M.length-1).map(m=>mName(m)+' '+m.slice(0,4));
+const zeroNote = zeroMonths.length ? ' '+zeroMonths.join(' and ')+(zeroMonths.length>1?' have':' has')+' no records in the export.' : '';
+const asofLabel = new Date(D.asof+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});
+const l7 = _l7, l7Avg = _l7Avg, peak = Math.max(0, ...octFull.map(x=>x.n)), eased = l7Avg < 0.9*octPerDay;
+const dlab = d => !d ? 'n/a' : MN[+d.slice(5,7)-1]+' '+(+d.slice(8));
+const C = D.counts, MD = D.model, UP = D.upd;
+const sumM = (obj, ms) => ms.reduce((a,m)=>a+((obj&&obj[m])||0),0);
+
+/* ---------- header ---------- */
+$('#lede').innerHTML = `The last three full months (${q3Range}) averaged <b>${fmt(q3Avg)} new connectors a month</b>, and ${curName} is on pace for roughly <b>${fmt(Math.round(octProj/100)*100)}</b>. ` + (eased ? `Within ${curName} the daily rate has eased, from a peak of ${fmt(peak)} to about <b>${fmt(l7Avg)} a day</b> over the last week.` : `The daily rate is holding steady at about <b>${fmt(l7Avg)} a day</b>.`) + ` ${Math.round(commShare*100)}% of launches since ${mName(q3[0])} are community-submitted.`;
+$('#kpis').innerHTML = [
+  [fmt(q3Avg), 'Average per month, last 3 full months', q3.map(m=>mShort(m)+' - '+fmt(D.tot[idx(m)])).join(' · ')],
+  [fmt(octTot), `Launched in ${curName} so far`, `On pace for about ${fmt(Math.round(octProj/100)*100)} by ${mShort(CUR)} ${dim(CUR)}`],
+  [fmt(octPerDay), `Per day in ${curName}`, `Versus ${fmt(augPerDay)} a day in ${mName(q3[1])} (${(octPerDay/augPerDay).toFixed(1)}×)`],
+  [Math.round(commShare*100)+'%', `Community-tier share since ${mName(q3[0])}`, `${fmt(commJO)} of ${fmt(totJO)} launches. ${fmt(verJO)} were Verified.`]
+].map(([n,l,d]) => `<div class="kpi"><div class="n">${n}</div><div class="l">${l}</div><div class="d">${d}</div></div>`).join('');
+
+/* ---------- tooltip ---------- */
+const tip = $('#tip');
+function showTip(html, x, y){
+  tip.innerHTML = html; tip.style.opacity = 1;
+  const r = tip.getBoundingClientRect();
+  let left = x + 14, top = y + 14;
+  if (left + r.width > innerWidth - 8) left = x - r.width - 14;
+  if (top + r.height > innerHeight - 8) top = y - r.height - 14;
+  tip.style.left = Math.max(8,left) + 'px'; tip.style.top = Math.max(8,top) + 'px';
+}
+const hideTip = () => tip.style.opacity = 0;
+function bindTips(root){
+  root.querySelectorAll('[data-tip]').forEach(el => {
+    el.addEventListener('pointermove', e => showTip(el.dataset.tip, e.clientX, e.clientY));
+    el.addEventListener('pointerleave', hideTip);
+    el.addEventListener('pointerdown', e => showTip(el.dataset.tip, e.clientX, e.clientY));
+  });
+}
+addEventListener('scroll', hideTip, {passive:true});
+
+/* What each tier means, shown on hover over its name in a legend or a table heading. Wording follows Anthropic's connector directory documentation. */
+const TIER_DEF = {
+  community: '<b>Community</b><br>Built by a third-party developer. Anthropic screens these connectors automatically before listing them but has not reviewed them in depth.',
+  partner: '<b>Verified</b><br>Reviewed by Anthropic for quality and compatibility, and shown with a checkmark. This is not a security audit or a guarantee of performance.<br><span class="m">Listed as “partner” in the directory data.</span>',
+  anthropic: '<b>Anthropic</b><br>Built and published by Anthropic.',
+  first: '<b>First party</b><br>Anthropic and Verified connectors together: built by Anthropic, or reviewed by Anthropic before listing.',
+  third: '<b>3rd party</b><br>Community connectors: built by a third-party developer and screened automatically, not reviewed in depth.'
+};
+document.addEventListener('pointermove', e => { const t = e.target.closest && e.target.closest('[data-tier]'); if (t) showTip(TIER_DEF[t.dataset.tier], e.clientX, e.clientY); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('[data-tier]'); if (t && !t.contains(e.relatedTarget)) hideTip(); });
+
+function placeInfo(e){
+  const i = e.target.closest && e.target.closest('.info'); if (!i) return;
+  const r = i.getBoundingClientRect(), w = Math.min(320, innerWidth*0.8);
+  i.classList.toggle('r', r.left - 10 + w > innerWidth - 12 && r.right + 10 - w > 12);
+}
+document.addEventListener('mouseover', placeInfo); document.addEventListener('focusin', placeInfo);
+
+function seg(id, cb){
+  const root = $(id);
+  root.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    root.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x===b));
+    cb(b.dataset.v);
+  });
+}
+const niceMax = v => { const s = [500,1000,1500,2000,2500,3000,4000,5000,6000]; return s.find(x => x >= v) || Math.ceil(v/1000)*1000; };
+
+/* ---------- 1. monthly ---------- */
+let monthMode = 'party';
+$('#h-month').textContent = `Monthly launches: from ${fmt(D.tot[idx(q3[0])])} in ${mName(q3[0])} to a pace near ${fmt(Math.round(octProj/100)*100)} in ${curName}`;
+const paceDone = octFull.length, paceLeft = dim(CUR) - octFull.length;
+/* The daily rate is shown to one decimal, so the sum on the page adds up exactly as printed. */
+const paceRate = Math.round(_l7Avg * 10) / 10, paceAdd = Math.round(paceLeft * paceRate), paceTotal = octFullSum + paceAdd;
+const rateTxt = paceRate.toLocaleString('en-US', {maximumFractionDigits: 1});
+const dayWord = n => n === 1 ? 'day' : 'days';
+const paceLines = [
+  `${fmt(octFullSum)} launches on ${paceDone} complete ${dayWord(paceDone)} so far`,
+  `+ ${paceLeft} ${dayWord(paceLeft)} still to come × ${rateTxt} a day`,
+  `= ${fmt(octFullSum)} + ${fmt(paceAdd)} = ${fmt(paceTotal)}`
+];
+$('#n-month').textContent = `Dashed outline shows where ${curName} lands if the average of the last 7 full days (${fmt(_l7Avg)} a day) holds for the rest of the month. The dashed horizontal line is the ${q3Range} average.${zeroNote}`;
+function renderMonth(){
+  const el = $('#c-month'); const W = Math.max(320, el.clientWidth);
+  const H = W < 520 ? 300 : 360, L = W < 520 ? 38 : 44, R = 8, T = 28, B = 34;
+  const pw = W-L-R, ph = H-T-B;
+  const ymax = niceMax(Math.max(octProj, ...D.tot) * 1.04);
+  const y = v => T + ph - v/ymax*ph;
+  const n = M.length, slot = pw/n, bw = Math.min(46, slot*0.68);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly connector launches">`;
+  const step = ymax <= 2000 ? 500 : 1000;
+  for (let v=0; v<=ymax; v+=step){
+    s += `<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" style="stroke:var(--grid)"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${fmt(v)}</text>`;
+  }
+  M.forEach((m,i) => {
+    const x = L + slot*i + (slot-bw)/2, tot = D.tot[i];
+    const tipHtml = `<b>${mlabel(m,true)}</b><br>${fmt(tot)} launches` + (m===CUR ? ` so far<br><span class="m">Pace for the month: about ${fmt(Math.round(paceTotal/10)*10)}<br><b>How it is worked out</b><br>${paceLines.map(esc).join('<br>')}</span><br>` : '') +
+      (tot ? `<br><span class="m">${monthMode === 'party'
+        ? `First party ${fmt(D.tiers.partner[i] + D.tiers.anthropic[i])} (Verified ${fmt(D.tiers.partner[i])} + Anthropic ${fmt(D.tiers.anthropic[i])}) · 3rd party ${fmt(D.tiers.community[i])}`
+        : `Community ${fmt(D.tiers.community[i])} · Verified ${fmt(D.tiers.partner[i])} · Anthropic ${fmt(D.tiers.anthropic[i])}`}</span>` : '<br><span class="m">No records in export</span>');
+    s += `<g data-tip="${esc(tipHtml)}">`;
+    s += `<rect x="${L+slot*i}" y="${T}" width="${slot}" height="${ph}" fill="transparent"/>`;
+    if (tot === 0){
+      if (W >= 520) s += `<text x="${x+bw/2}" y="${y(0)-8}" text-anchor="middle" style="font-size:11px">no data</text>`;
+    } else if (monthMode === 'total'){
+      s += `<rect x="${x}" y="${y(tot)}" width="${bw}" height="${y(0)-y(tot)}" rx="3" style="fill:var(--community)"/>`;
+    } else {
+      let base = 0;
+      const parts = monthMode === 'party'
+        ? [[D.tiers.partner[i]+D.tiers.anthropic[i],'--first'],[D.tiers.community[i],'--community']]
+        : [[D.tiers.community[i],'--community'],[D.tiers.partner[i],'--partner'],[D.tiers.anthropic[i],'--anthropic']];
+      parts.forEach(([v,c]) => {
+        if (!v) return;
+        s += `<rect x="${x}" y="${y(base+v)}" width="${bw}" height="${Math.max(1,y(base)-y(base+v))}" style="fill:var(${c})"/>`; base += v;
+      });
+    }
+    if (m === CUR){
+      s += `<rect x="${x+1}" y="${y(octProj)}" width="${bw-2}" height="${y(tot)-y(octProj)}" rx="3" style="fill:none;stroke:var(--community);stroke-width:1.5;stroke-dasharray:4 3"/>`;
+      s += `<text class="v" x="${x+bw/2}" y="${y(octProj)-8}" text-anchor="middle">~${fmt(Math.round(octProj/100)*100)}</text>`;
+    } else if (tot){
+      if (W >= 520 || m >= P4) s += `<text class="v" x="${x+bw/2}" y="${y(tot)-7}" text-anchor="middle" style="font-size:${W<520?10:12}px">${fmt(tot)}</text>`;
+    }
+    const lab = (i===0||m.endsWith('-01')) ? mlabel(m)+' ’'+m.slice(2,4) : mlabel(m);
+    s += `<text x="${x+bw/2}" y="${H-12}" text-anchor="middle">${W<520 && i%2===1 ? '' : lab}</text></g>`;
+  });
+  s += `<line x1="${L}" x2="${W-R}" y1="${y(q3Avg)}" y2="${y(q3Avg)}" style="stroke:var(--ink2);stroke-dasharray:5 4"/>`;
+  s += `<text x="${L+4}" y="${y(q3Avg)-6}" style="fill:var(--ink2);font-weight:600">${q3Short} average ${fmt(q3Avg)}</text>`;
+  s += `</svg>`;
+  el.innerHTML = s; bindTips(el);
+  $('#lg-month').innerHTML = (monthMode === 'party'
+    ? `<span data-tier="first"><i style="background:var(--first)"></i>First party (Verified + Anthropic)</span><span data-tier="third"><i style="background:var(--community)"></i>3rd party (Community)</span>`
+    : monthMode === 'tier'
+    ? `<span data-tier="community"><i style="background:var(--community)"></i>Community</span><span data-tier="partner"><i style="background:var(--partner)"></i>Verified</span><span data-tier="anthropic"><i style="background:var(--anthropic)"></i>Anthropic (published and developed by Anthropic)</span>`
+    : `<span><i style="background:var(--community)"></i>All tiers</span>`);
+}
+seg('#seg-month', v => { monthMode = v; renderMonth(); });
+
+/* ---------- 2. daily ---------- */
+$('#h-day').textContent = `Average Daily Launches: Approximately ${fmt(octPerDay)} in ${curName}`;
+function renderDay(){
+  const el = $('#c-day'); const W = Math.max(320, el.clientWidth);
+  const H = W < 520 ? 260 : 320, L = 40, R = 8, T = 16, B = 32;
+  const pw = W-L-R, ph = H-T-B;
+  const ymax = niceMax(Math.max(...daily.map(x=>x.n))*1.08);
+  const y = v => T + ph - v/ymax*ph;
+  const n = daily.length, slot = pw/n, bw = Math.max(2, slot*0.72);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Daily connector launches over the last nine weeks">`;
+  const step = ymax <= 500 ? 100 : 50*Math.ceil(ymax/4/50);
+  for (let v=0; v<=ymax; v+=step) s += `<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" style="stroke:var(--grid)"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`;
+  daily.forEach((d,i) => {
+    const x = L + slot*i + (slot-bw)/2, last = i === n-1;
+    const t = `<b>${d.dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'})}</b><br>${fmt(d.n)} launches${last?'<br><span class="m">Day in progress</span>':''}`;
+    const op = last ? .35 : isWknd(d) ? .5 : 1;
+    s += `<g data-tip="${esc(t)}"><rect x="${L+slot*i}" y="${T}" width="${slot}" height="${ph}" fill="transparent"/><rect x="${x}" y="${y(d.n)}" width="${bw}" height="${Math.max(1,y(0)-y(d.n))}" rx="${bw>5?2:0}" style="fill:var(--community);opacity:${op}"/></g>`;
+    if (d.dt.getUTCDay()===1 && W>=520 || (d.dt.getUTCDay()===1 && i%14===0)){
+      s += `<text x="${x+bw/2}" y="${H-10}" text-anchor="middle">${mlabel(d.d.slice(0,7))} ${+d.d.slice(8)}</text>`;
+    }
+  });
+  const pts = [];
+  for (let i=6;i<n-1;i++){ let sm=0; for(let k=i-6;k<=i;k++) sm+=daily[k].n; pts.push([L+slot*i+slot/2, y(sm/7)]); }
+  s += `<polyline fill="none" style="stroke:var(--partner);stroke-width:2.5;stroke-linejoin:round" points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
+  s += `</svg>`;
+  el.innerHTML = s; bindTips(el);
+}
+
+
+/* ---------- categories ---------- */
+let srcMode='off', lvFilter='all', rankP='prev', hmMode='share', hmLvl='all', dvLvl='all';
+const PER={prev:[q3[2]],q:q3,all:M}; // the last full month, not the current one, which is still filling up
+const PN={prev:mName(q3[2]),q:q3Range,all:'all dated launches'};
+const cnt=(c,ms)=>sumM(c.off,ms)+(srcMode==='both'?sumM(c.pred,ms):0);
+const cats=Object.entries(D.cats).map(([k,v])=>({k,...v,name:pretty(v.label)}));
+const periodTotal=ms=>cats.reduce((a,c)=>a+cnt(c,ms),0);
+const estShare=ms=>{const o=cats.reduce((a,c)=>a+sumM(c.off,ms),0),p=cats.reduce((a,c)=>a+sumM(c.pred,ms),0);return p/(o+p||1);};
+const col=l=>`var(${LV[l][1]})`;
+const totalOf=ms=>ms.reduce((a,m)=>a+(D.tot[idx(m)]||0),0);
+const chipOf=r=>r.level?chip(r.level):'';
+// Every launch in the period has a share. Launches with no official category become one extra row, Uncategorized.
+// Each connector is filed under one label (department, else industry, else life area). On a single level the shares are of the launches filed
+// under that level, so the centre total, the slices and the percentages all agree.
+function rankRows(ms){
+  const unc=Math.max(0,totalOf(ms)-periodTotal(ms));
+  const rows=cats.map(c=>({...c,n:cnt(c,ms),o:sumM(c.off,ms),p:srcMode==='both'?sumM(c.pred,ms):0})).filter(r=>r.n>0&&(lvFilter==='all'||r.level===lvFilter));
+  const tot=(lvFilter==='all'?totalOf(ms):rows.reduce((a,r)=>a+r.n,0))||1;
+  const uncRow=lvFilter==='all'&&unc>0?{k:'_unc',name:'Uncategorized',level:null,unc:true,n:unc,o:unc,p:0}:null;
+  return {tot,rows:rows.sort((a,b)=>b.n-a.n),uncRow};
+}
+const LVONE={dept:'a department',industry:'an industry'};
+// What the percentages are of, and (on a single level) how many launches are outside it.
+const ofTxt=tot=>lvFilter==='all'?'of all launches':`of the launches that have ${LVONE[lvFilter]}`;
+const scopeNote=(ms,tot)=>lvFilter==='all'?'':` Of ${fmt(totalOf(ms))} launches, ${fmt(tot)} have ${LVONE[lvFilter]} and are counted here.`;
+const uncTip=(r,tot)=>`<b>Uncategorized</b><br>${fmt(r.n)} launches · ${(r.n/tot*100).toFixed(1)}%<br><span class="m">No category in the directory. We do not guess one.</span>`;
+
+function renderRank(){
+  const ms=PER[rankP], {tot,rows:cr,uncRow}=rankRows(ms);
+  const rows=uncRow?[...cr,uncRow].sort((a,b)=>b.n-a.n):cr;
+  const all=rows.length, top=rows.slice(0,showAll?all:14), mx=Math.max(...top.map(r=>r.n/tot));
+  const lead=cr[0], uncNote=uncRow?` ${(uncRow.n/tot*100).toFixed(1)}% of launches have no category and are shown as Uncategorized.`:'';
+  $('#n-rank').textContent = lead ? `${lead.name} is the largest category (${PN[rankP]}) with ${(lead.n/tot*100).toFixed(1)}% ${ofTxt(tot)}.${uncNote}${scopeNote(ms,tot)} Hover or tap a row for details.` : 'No launches in this period.';
+  $('#c-rank').innerHTML = top.map(r=>{
+    const p=r.n/tot, fill=r.unc?'var(--ink3)':col(r.level);
+    const t=r.unc?uncTip(r,tot):`<b>${esc(r.name)}</b> (${LV[r.level][0].toLowerCase()})<br>${fmt(r.n)} launches · ${(p*100).toFixed(1)}%<br><span class="m">${fmt(r.o)} official${srcMode==='both'?` · ${fmt(r.p)} estimated`:''} · ${r.partner} verified all time<br>Latest: ${r.ex.map(esc).join(', ')}</span>`;
+    return `<div class="row" data-tip="${esc(t)}"><div class="nm">${esc(r.name)}${chipOf(r)}</div><div class="tr"><div style="display:flex;height:100%;width:${p/mx*100}%"><div class="fl" style="width:${r.n?r.o/r.n*100:0}%;background:${fill};border-radius:7px 0 0 7px"></div><div class="fl" style="width:${r.n?r.p/r.n*100:0}%;background:${fill};opacity:.42;border-radius:0 7px 7px 0"></div></div></div><div class="nmb">${fmt(r.n)}<span>${(p*100).toFixed(1)}%</span></div></div>`;}).join('');
+  bindTips($('#c-rank'));
+  $('#more-wrap').innerHTML = all>14 ? `<button class="morebtn" id="morebtn">${showAll?'Show top 14':'Show all '+all}</button>` : '';
+  const b=$('#morebtn'); if(b) b.onclick=()=>{showAll=!showAll;renderRank();};
+}
+let showAll=false;
+seg('#seg-rank',v=>{rankP=v;showAll=false;renderRank();});
+seg('#seg-lvl',v=>{lvFilter=v;showAll=false;renderRank();});
+
+/* heatmap */
+const HM=M.slice(ci-4,ci+1);
+function renderHM(){
+  // The rows are the categories of the chosen type. Shares are of the launches filed under that type in the month.
+  const hc=hmLvl==='all'?cats:cats.filter(c=>c.level===hmLvl);
+  const hmT=m=>hc.reduce((a,c)=>a+cnt(c,[m]),0);
+  const labs=hc.map(c=>({...c,all:cnt(c,HM)})).sort((a,b)=>b.all-a.all).slice(0,18);
+  const val=(l,m)=>hmMode==='share'?cnt(l,[m])/(hmT(m)||1):cnt(l,[m]);
+  const mx=Math.max(1e-9,...labs.flatMap(l=>HM.map(m=>val(l,m))));
+  const top={}; HM.forEach(m=>{top[m]=[...hc].sort((a,b)=>cnt(b,[m])-cnt(a,[m])).slice(0,3).map(x=>x.k);});
+  const what=hmLvl==='all'?'a category':HMONE[hmLvl], none=hmLvl==='all'?'no official category':'no '+HMNOUN[hmLvl];
+  $('#n-hm').textContent = hmMode==='share' ? `Each column is one month and each row is ${what}. A cell shows the share of that month’s launches that went to the ${hmLvl==='all'?'category':HMNOUN[hmLvl]}${hmLvl==='all'?'':' (out of the launches that have '+what+')'}, and a darker cell means a bigger share. The last row shows the share of each month’s launches that have ${none}; those are not counted in the cells above.` : `Raw launch counts per ${hmLvl==='all'?'category':HMNOUN[hmLvl]}. Every one grows in absolute terms because total volume does, so use the share view for relative momentum.`;
+  let h=`<table><thead><tr><th></th>${HM.map(m=>`<th>${mlabel(m)}${m===CUR?'*':''}</th>`).join('')}</tr></thead><tbody>`;
+  labs.forEach(l=>{h+=`<tr><td class="rl">${esc(l.name)}${chip(l.level)}</td>`;
+    HM.forEach(m=>{if(!cnt(l,[m])){h+='<td></td>';return;} // no launches: leave the cell empty
+      const v=val(l,m),a=Math.max(.06,Math.pow(v/mx,.75)*.95),txt=hmMode==='share'?(v*100).toFixed(1)+'%':fmt(v);
+      const t=`<b>${esc(l.name)}</b><br>${mlabel(m,true)}: ${fmt(cnt(l,[m]))} launches<br><span class="m">${(cnt(l,[m])/(hmT(m)||1)*100).toFixed(1)}% of the month’s launches that have ${hmLvl==='all'?'a category':HMONE[hmLvl]}</span>`;
+      h+=`<td class="c ${a>.55?'hi':''} ${top[m].includes(l.k)?'top':''}" style="--a:${a.toFixed(2)}" data-tip="${esc(t)}">${txt}</td>`;});
+    h+='</tr>';});
+  const untag=m=>{const t=D.tot[idx(m)]||0;return t?Math.round((1-hmT(m)/t)*100):0;};
+  h+=`<tr class="nrow"><td style="text-align:left;padding-left:0">${hmLvl==='all'?'Untagged share of the month':'Share of the month with '+none}</td>${HM.map(m=>`<td>${untag(m)}%</td>`).join('')}</tr>`;
+  $('#c-hm').innerHTML=h+'</tbody></table>'; bindTips($('#c-hm'));
+}
+const HMNOUN={dept:'department',industry:'industry'}, HMONE={dept:'a department',industry:'an industry'};
+seg('#seg-hm',v=>{hmMode=v;renderHM();});
+seg('#seg-hmlvl',v=>{hmLvl=v;renderHM();});
+
+
+/* rising / cooling */
+const CP={oct:[CUR],p1:[q3[2]],p2:[q3[1]],p3:[q3[0]],p4:[P4],q:q3};
+const CPN={oct:curName+' so far',p1:mName(q3[2]),p2:mName(q3[1]),p3:mName(q3[0]),p4:mName(P4),q:q3Range};
+$('#s-to').innerHTML=['oct','p1','p2'].map(k=>`<option value="${k}">${CPN[k]}</option>`).join('');
+$('#s-from').innerHTML=['q','p2','p3','p1','p4'].map(k=>`<option value="${k}">${CPN[k]}</option>`).join('');
+function renderDV(){
+  // The rows are the categories of the chosen type, and shares are of the launches filed under that type in each period.
+  const dc=dvLvl==='all'?cats:cats.filter(c=>c.level===dvLvl), tcnt=ms=>dc.reduce((x,c)=>x+cnt(c,ms),0);
+  const a=CP[$('#s-from').value],b=CP[$('#s-to').value], ta=tcnt(a), tb=tcnt(b);
+  const rows=dc.map(c=>({...c,na:cnt(c,a),nb:cnt(c,b)})).filter(r=>r.na+r.nb>=15).map(r=>({...r,sa:ta?r.na/ta*100:0,sb:tb?r.nb/tb*100:0})).map(r=>({...r,d:r.sb-r.sa})).sort((x,y)=>y.d-x.d);
+  const mx=Math.max(1,...rows.map(r=>Math.abs(r.d)));
+  const up=rows[0],dn=rows[rows.length-1];
+  const unit=dvLvl==='all'?'category':HMNOUN[dvLvl], has=dvLvl==='all'?'labelled launches':`launches that have ${HMONE[dvLvl]}`;
+  $('#h-dv').textContent = dvLvl==='all'?'Rising and Declining Categories by Share of Launches':`Rising and Declining ${dvLvl==='dept'?'Departments':'Industries'} by Share of Launches`;
+  const ea=estShare(a), eb=estShare(b);
+  $('#n-dv').textContent = (rows.length>1 ? `${up.name} gained the most share and ${dn.name} lost the most. ` : rows.length ? `Only ${up.name} has enough launches in these periods to compare. ` : 'No '+unit+' has enough launches in these periods to compare. ') + `Change in each ${unit}’s share of ${has}, ${CPN[$('#s-to').value]} compared with ${CPN[$('#s-from').value]}. A gain means the ${unit} is growing faster than the directory as a whole. ` + 'Only launches with an official tag are counted, and the later period has fewer tagged launches, so treat small gaps as noise.';
+  $('#c-dv').innerHTML=rows.map(r=>{const w=Math.abs(r.d)/mx*50,pos=r.d>=0;
+    const t=`<b>${esc(r.name)}</b><br>${CPN[$('#s-from').value]}: ${fmt(r.na)} (${r.sa.toFixed(1)}%)<br>${CPN[$('#s-to').value]}: ${fmt(r.nb)} (${r.sb.toFixed(1)}%)`;
+    return `<div class="dv w" data-tip="${esc(t)}"><div class="nm">${esc(r.name)}${chip(r.level)}</div><div class="ar"><div class="bar" style="width:${w}%;${pos?'left:50%;background:var(--up)':'right:50%;background:var(--down)'}"></div></div><div class="vl">${pos?'+':'−'}${Math.abs(r.d).toFixed(1)} pts</div></div>`;}).join('');
+  bindTips($('#c-dv'));
+}
+seg('#seg-dvlvl',v=>{dvLvl=v;renderDV();});
+$('#s-to').onchange=renderDV; $('#s-from').onchange=renderDV;
+
+/* tier mix by category group */
+$('#hm-cov').textContent=curName+' covers the 1st to the '+ordinal(+D.asof.slice(8))+'.';
+$('#seg-rank button[data-v=prev]').textContent=mName(q3[2]);
+$('#seg-rank button[data-v=q]').textContent=q3Short;
+document.title='Claude connector directory: launch pace and categories';
+
+/* ---------- tier comparison tab ---------- */
+(function(){
+  const CURM = D.asof.slice(0,7);
+  const TC=[['community','Community','--community',''],['partner','Verified','--partner',''],['anthropic','Anthropic','--anthropic','published and developed by Anthropic']];
+  const sh=(n,t)=>t?Math.round(n/t*100)+'%':'–';
+  const rows=M.map((m,i)=>({m,i,c:D.tiers.community[i],v:D.tiers.partner[i],a:D.tiers.anthropic[i],t:D.tot[i]})).reverse();
+  const sum=k=>rows.reduce((a,r)=>a+r[k],0), T={c:sum('c'),v:sum('v'),a:sum('a'),t:sum('t')};
+  const full=rows.filter(r=>r.m!==CURM&&r.t>0).slice(0,3);
+  const fc=full.reduce((a,r)=>a+r.c,0), fv=full.reduce((a,r)=>a+r.v,0);
+  $('#h-tier').textContent=`Tier comparison: launches per month${fv?`, about ${Math.round(fc/fv)} Community for every 1 Verified lately`:''}`;
+  $('#n-tier').textContent=`Launches per month split by verification tier. The rows run from the latest month back to the first. ${mlabel(CURM,true)} is partial (it runs to ${dlabT(D.asof)}), and months with no records are shown as “no data”.`;
+  function dlabT(d){return MN[+d.slice(5,7)-1]+' '+(+d.slice(8));}
+  let h=`<table class="tt"><thead><tr><th>Month</th>${TC.map(([k,n,c,s])=>`<th data-tier="${k}"><i style="background:var(${c})"></i>${n}${s?`<small>${s}</small>`:''}</th>`).join('')}<th>Total</th></tr></thead><tbody>`;
+  rows.forEach(r=>{
+    const lab=mlabel(r.m,true)+(r.m===CURM?'*':'');
+    if(!r.t){h+=`<tr class="zero"><td>${lab}</td><td colspan="4" style="text-align:left">no data</td></tr>`;return;}
+    const tip=`<b>${mlabel(r.m,true)}</b><br>Community ${fmt(r.c)} (${sh(r.c,r.t)})<br>Verified ${fmt(r.v)} (${sh(r.v,r.t)})<br>Anthropic ${fmt(r.a)} (${sh(r.a,r.t)})`;
+    h+=`<tr><td>${lab}</td><td><b>${fmt(r.c)}</b></td><td><b>${fmt(r.v)}</b></td><td><b>${fmt(r.a)}</b></td><td class="big"><b>${fmt(r.t)}</b></td></tr>`;
+  });
+  h+=`</tbody><tfoot><tr><td>All months</td><td>${fmt(T.c)}</td><td>${fmt(T.v)}</td><td>${fmt(T.a)}</td><td>${fmt(T.t)}</td></tr></tfoot></table>`;
+  $('#c-tier').innerHTML=h; bindTips($('#c-tier'));
+  function showTab(t){
+    $('#tab-main').hidden=t!=='main'; $('#tab-tier').hidden=t!=='tier';
+    document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
+    hideTip(); if(t==='main'){renderMonth();renderDay();}
+  }
+  document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+})();
+
+
+$('#dl').addEventListener('click', async () => {
+  let text;
+  try {
+    const r = await fetch(location.href);
+    if (!r.ok) throw new Error('fetch failed');
+    text = await r.text();
+    if (!text.includes('__REPORT_DATA__') && !text.includes('const D =')) throw new Error('unexpected content');
+  } catch (e) {
+    text = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  }
+  const url = URL.createObjectURL(new Blob([text], {type: 'text/html;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href = url; a.download = 'claude_connectors_dashboard_' + D.asof + '.html';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+});
+
+function renderAll(){ renderMonth(); renderDay(); renderRank(); renderHM(); renderDV(); }
+renderAll();
+let rt; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(() => { renderMonth(); renderDay(); }, 120); }).observe(document.body);
+
+</script></body></html>

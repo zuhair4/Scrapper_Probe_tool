@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <clipPath id="tile"><rect width="64" height="64" rx="14"/></clipPath>
+    <radialGradient id="glow" cx="53" cy="47" r="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#86BC25" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#86BC25" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g clip-path="url(#tile)">
+    <rect width="64" height="64" fill="#0b0b0b"/>
+    <circle cx="53" cy="47" r="22" fill="url(#glow)"/>
+    <!-- probe "ping" rings -->
+    <circle cx="53" cy="47" r="12" fill="none" stroke="#86BC25" stroke-opacity=".55" stroke-width="1.6"/>
+    <circle cx="53" cy="47" r="19" fill="none" stroke="#86BC25" stroke-opacity=".28" stroke-width="1.4"/>
+    <circle cx="53" cy="47" r="26" fill="none" stroke="#86BC25" stroke-opacity=".14" stroke-width="1.2"/>
+    <!-- D -->
+    <path fill="#fff" fill-rule="evenodd"
+      d="M8 13H24C35.6 13 44 21.4 44 32S35.6 51 24 51H8Z M18 22V42H24C29.5 42 33 37.9 33 32S29.5 22 24 22Z"/>
+    <!-- dot -->
+    <circle cx="53" cy="47" r="5.5" fill="#86BC25"/>
+  </g>
+</svg>
