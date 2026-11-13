@@ -405,7 +405,7 @@ async function autoProbeDCR(
 
   const requestBody = {
     client_name: 'probe-client-auto',
-    redirect_uris: ['https://vertexaisearch.cloud.google.com/oauth-redirect'],
+    redirect_uris: ['https://teamz.example.com/oauth-redirect'],
     grant_types: ['authorization_code', 'refresh_token'],
     response_types: ['code'],
     token_endpoint_auth_method: 'none',

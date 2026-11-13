@@ -33,14 +33,14 @@ describe('parseCsv', () => {
 const HEADER = 'id,name,category,taxonomy_category,object_acted_on,work_department,industry,life_area,endpoint_url';
 const csv = [
   HEADER,
-  'p1,Google Drive,Connector,files-documents,files-documents; notes-memory,,,,https://drivemcp.googleapis.com/mcp/v1',
+  'p1,TeamZ Drive,Connector,files-documents,files-documents; notes-memory,,,,https://drivemcp.teamz.example.com/mcp/v1',
   'p2,Figma,Connector,design,,design,,,https://mcp.figma.com/mcp',
   'p3,Shopify | Store,Connector,retail-ecommerce,,,retail-ecommerce,,https://shopify.dev/mcp',
   'p4,No taxonomy,Connector,,,,,,https://example.com/mcp',
   'p5,Salesforce,Connector,,,,,,"user-provided pattern: ^https://api\\.salesforce\\.com/mcp$"',
   'p6,Snowflake,Connector,,,,,,"user-provided: https://snowflakecomputing.com; user-provided: https://*.snowflakecomputing.com"',
   'p7,Empty URL,Connector,,,,,,',
-  'p8,Drive again,Connector,files-documents,files-documents,,,,https://drivemcp.googleapis.com/mcp/v1',
+  'p8,Drive again,Connector,files-documents,files-documents,,,,https://drivemcp.teamz.example.com/mcp/v1',
   'p9,Two URLs,Connector,,,,,,https://a.example.com/mcp; https://b.example.com/mcp',
 ].join('\n');
 
@@ -58,7 +58,7 @@ describe('picking endpoints and the taxonomy category from a CSV', () => {
   it('takes every fixed http(s) URL once, with the name as label and the category as "level:value"; a connector with several URLs gets the host in each name', () => {
     const r = endpointsFromCsv(table, guessColumns(table.headers));
     expect(r.endpoints).toEqual([
-      { url: 'https://drivemcp.googleapis.com/mcp/v1', label: 'Google Drive', category: 'object:files-documents' },
+      { url: 'https://drivemcp.teamz.example.com/mcp/v1', label: 'TeamZ Drive', category: 'object:files-documents' },
       { url: 'https://mcp.figma.com/mcp', label: 'Figma', category: 'dept:design' },
       { url: 'https://shopify.dev/mcp', label: 'Shopify / Store', category: 'industry:retail-ecommerce' },
       { url: 'https://example.com/mcp', label: 'No taxonomy', category: undefined },

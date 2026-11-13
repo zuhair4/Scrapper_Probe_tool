@@ -91,14 +91,14 @@ describe('probe run title', () => {
   const eps = (names: string[]) => names.map((label) => ({ label, appName: undefined, url: `https://${label.replace(/\W/g, '').toLowerCase()}.example.com/mcp` }));
 
   it('counts the endpoints in the title, or names a single one', () => {
-    expect(probeTitle(eps(['Google Drive', 'Gmail', 'Google Calendar', 'Sheets']))).toBe('OAuth probe: 4 MCP endpoints');
-    expect(probeTitle(eps(['Google Drive']))).toBe('OAuth probe: Google Drive');
+    expect(probeTitle(eps(['TeamZ Drive', 'TeamZ Mail', 'TeamZ Calendar', 'Sheets']))).toBe('OAuth probe: 4 MCP endpoints');
+    expect(probeTitle(eps(['TeamZ Drive']))).toBe('OAuth probe: TeamZ Drive');
   });
 
   it('lists the first names in words, with the rest counted', () => {
-    expect(probeNames(eps(['Google Drive', 'Gmail', 'Google Calendar', 'Sheets', 'Docs']))).toBe('Google Drive, Gmail, Google Calendar and 2 more');
-    expect(probeNames(eps(['Google Drive', 'Gmail', 'Google Calendar']))).toBe('Google Drive, Gmail and Google Calendar');
-    expect(probeNames(eps(['Google Drive', 'Gmail']))).toBe('Google Drive and Gmail');
-    expect(probeNames(eps(['Google Drive']))).toBe('');
+    expect(probeNames(eps(['TeamZ Drive', 'TeamZ Mail', 'TeamZ Calendar', 'Sheets', 'Docs']))).toBe('TeamZ Drive, TeamZ Mail, TeamZ Calendar and 2 more');
+    expect(probeNames(eps(['TeamZ Drive', 'TeamZ Mail', 'TeamZ Calendar']))).toBe('TeamZ Drive, TeamZ Mail and TeamZ Calendar');
+    expect(probeNames(eps(['TeamZ Drive', 'TeamZ Mail']))).toBe('TeamZ Drive and TeamZ Mail');
+    expect(probeNames(eps(['TeamZ Drive']))).toBe('');
   });
 });

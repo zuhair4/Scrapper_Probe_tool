@@ -21,8 +21,8 @@ Versions are the ranges in `package.json`. Only five packages are runtime depend
 | Runtime | Node.js 18+ | Express server; uses the built-in `fetch` for probe requests |
 | Frontend framework | React 18, `react-dom` | UI. No router or state library: a History-API router and plain React state live in `App.tsx` |
 | Build tool | Vite 5, `@vitejs/plugin-react` | Dev server (:5173), production bundle, dev-only `/proxy` to Anthropic |
-| Styling | Tailwind CSS 3, PostCSS, Autoprefixer | Deloitte palette (`dl.*`), layout |
-| Fonts | Google Fonts (browser, at run time) | Open Sans and JetBrains Mono in the app; Bricolage Grotesque and Figtree in the report templates |
+| Styling | Tailwind CSS 3, PostCSS, Autoprefixer | TeamZ palette (`dl.*`), layout |
+| Fonts | Web Fonts (browser, at run time) | Open Sans and JetBrains Mono in the app; Bricolage Grotesque and Figtree in the report templates |
 | Backend framework | Express 4 | `/api/probe`, `/api/health`, `/api/chatgpt/*` |
 | Validation | zod 3 | `ProbeRequestSchema` |
 | CORS | `cors` | Dev client origin only |
@@ -79,7 +79,6 @@ One `package.json` at the root serves both halves. `frontend/` is everything tha
 ├── ARCHITECTURE.md                This file
 ├── package.json, package-lock.json   Dependencies and scripts for both halves
 ├── vitest.config.ts               Node environment; runs frontend/tests and backend/tests
-├── deloitte.png                   Not referenced by the code (the app uses frontend/public/deloitte-logo.png)
 ├── connectors-without-probeable-url.csv   Sample export from the Claude page; nothing reads it
 ├── .gitignore                     node_modules, dist, .env*, logs, *.har, .data/
 │
@@ -87,10 +86,10 @@ One `package.json` at the root serves both halves. `frontend/` is everything tha
 │   ├── index.html                 Vite entry: fonts, #root, loads src/main.tsx
 │   ├── vite.config.ts             Dev server :5173; proxies /proxy (Anthropic) and /api (Express :3001); build to dist/frontend
 │   ├── tsconfig.json              Client + frontend tests (bundler resolution, noEmit)
-│   ├── tailwind.config.js         Deloitte palette (dl.*), Open Sans and JetBrains Mono
+│   ├── tailwind.config.js         TeamZ palette (dl.*), Open Sans and JetBrains Mono
 │   ├── postcss.config.js
 │   ├── public/
-│   │   ├── deloitte-logo.png      Nav logo, PNG icon fallback, Apple touch icon
+│   │   ├── teamz-logo.svg         Nav logo, SVG icon fallback, Apple touch icon
 │   │   └── favicon.svg            Browser tab icon
 │   │
 │   ├── src/

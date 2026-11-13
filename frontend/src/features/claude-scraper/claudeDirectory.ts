@@ -6,7 +6,7 @@ export type Category = 'Connector' | 'Plugin' | 'Extension';
 export const PROXY_BASE = '/proxy/api/directory/plugins';
 export const REAL_ENDPOINT = 'https://api.anthropic.com/api/directory/plugins';
 
-const VISIBILITY = 'commercial,enterprise,gsuite-google,gsuite-google-editors,public';
+const VISIBILITY = 'commercial,enterprise,public';
 const VERIFIED_TIER = 'anthropic,partner,community';
 
 export function baseParams(): URLSearchParams {

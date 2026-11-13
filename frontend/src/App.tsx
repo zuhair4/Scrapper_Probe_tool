@@ -391,7 +391,7 @@ export default function App() {
             }}
             className="flex items-center gap-3"
           >
-            <img src="/deloitte-logo.png" alt="Deloitte" className="h-9 w-9 rounded-md ring-1 ring-white/15" />
+            <img src="/teamz-logo.svg" alt="TeamZ" className="h-9 w-9 rounded-md ring-1 ring-white/15" />
             <span className="text-white font-semibold text-lg tracking-tight">MCP Toolkit</span>
           </a>
           <div className="flex items-center gap-6 ml-auto">

@@ -24,7 +24,7 @@ Informatica Data Exploration,Informatica,partner,URL pattern (regex),,^https://(
 Intapp Celeste,Intapp Celeste,partner,Host list (user-provided),*.my.intapp.com,,/v1/mcp,https://www.intapp.com/mcp-documentation/,plugin_01UN8sXDdVxxWdCE7ngsETs3
 Introhive,Introhive,partner,Host list (user-provided),*.introhive.com,,/pollen/mcp,https://help.introhive.com/en/articles/15444796-introhive-mcp-server-configuration-support-guide,plugin_01GpxhjPYeuH6WAdv56bXrG1
 Ivo,Ivo,partner,Host list (user-provided),*.ivo.ai,,/mcp,https://www.ivo.ai/product/intelligence,plugin_0157wk5MQiHNpWvuae4Mn6TP
-Lloyd by The L Suite,The L Suite,partner,Host list (user-provided),api.techgc.co,,/api/mcp/org,https://docs.google.com/forms/d/e/1FAIpQLSeK2KFt1G1XbqgQdp2J-cvnLDtiUDigSsTjFH-Hk_B-Va0pRw/viewform?usp=publish-editor,plugin_01NNouF9DPuv9kpUEYQz1Nrx
+Lloyd by The L Suite,The L Suite,partner,Host list (user-provided),api.techgc.co,,/api/mcp/org,https://docs.teamz.example.com/forms/d/e/1FAIpQLSeK2KFt1G1XbqgQdp2J-cvnLDtiUDigSsTjFH-Hk_B-Va0pRw/viewform,plugin_01NNouF9DPuv9kpUEYQz1Nrx
 Metabase,Metabase,partner,URL pattern (regex),,"^https://(?:[a-z0-9.-]+\.(?:metabaseapp|metabase)\.com/api/mcp|[a-z0-9.-]+\.[a-z]{2,}/api/metabase-mcp)/?$",,https://www.metabase.com/docs/latest/ai/mcp,plugin_013TMjbarHHfrihw8KM3Apy1
 Microsoft Dataverse,Microsoft,partner,URL pattern (regex),,^https://[a-z0-9.-]+\.crm[0-9]*\.dynamics\.com/api/mcp/?$,,https://learn.microsoft.com/en-us/power-apps/maker/data-platform/data-platform-mcp,plugin_01P2Mqk5QQitfyrwb5vN7ioy
 Motherboard,Motherboard Labs,partner,URL pattern (regex),,"^https://(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)\.motherboardlabs\.com/api/journeyman/mcp$",,https://www.motherboardlabs.com/docs/claude-connector,plugin_017WDExrLWFm1s1zwtRxTxXj

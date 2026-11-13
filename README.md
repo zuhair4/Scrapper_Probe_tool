@@ -34,8 +34,8 @@ Requires **Node 18 or newer** (the server uses the built-in `fetch`). On a corpo
 | Language | **TypeScript 5** (strict) | Frontend and backend |
 | Frontend | **React 18** (+ `react-dom`) | UI. No router library: a small History-API router lives in `App.tsx` |
 | Build / dev server | **Vite 5** with `@vitejs/plugin-react` | Dev server on :5173, production bundle, dev-only proxy to Anthropic |
-| Styling | **Tailwind CSS 3**, **PostCSS**, **Autoprefixer** | Deloitte palette and layout |
-| Fonts | Google Fonts: Open Sans, JetBrains Mono (app); Bricolage Grotesque, Figtree (reports) | Loaded from the browser at run time |
+| Styling | **Tailwind CSS 3**, **PostCSS**, **Autoprefixer** | TeamZ palette and layout |
+| Fonts | Web Fonts: Open Sans, JetBrains Mono (app); Bricolage Grotesque, Figtree (reports) | Loaded from the browser at run time |
 | Backend | **Node.js** + **Express 4** | API server on :3001 |
 | Validation | **zod 3** | Probe request schema |
 | Cross-origin | **cors** | Allows the dev client origin |
@@ -77,4 +77,4 @@ The app is built to run locally (`npm run dev`). Hosting it for a team needs a f
 
 ## Notes
 
-- The nav logo is `frontend/public/deloitte-logo.png` (also used as the PNG fallback and Apple touch icon). The browser tab icon is `frontend/public/favicon.svg`.
+- The nav logo is `frontend/public/teamz-logo.svg` (also used as the SVG fallback and Apple touch icon). The browser tab icon is `frontend/public/favicon.svg`.

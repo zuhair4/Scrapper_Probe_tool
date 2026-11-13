@@ -108,12 +108,12 @@ export function displayName(e: Pick<EndpointResult, 'label' | 'appName' | 'url'>
 
 type Named = Pick<EndpointResult, 'label' | 'appName' | 'url'>;
 
-/** The title of a probe run: "OAuth probe: 24 MCP endpoints", or "OAuth probe: Google Drive" for a single endpoint. */
+/** The title of a probe run: "OAuth probe: 24 MCP endpoints", or "OAuth probe: TeamZ Drive" for a single endpoint. */
 export function probeTitle(endpoints: Named[]): string {
   return endpoints.length === 1 ? `OAuth probe: ${displayName(endpoints[0])}` : `OAuth probe: ${endpoints.length} MCP endpoints`;
 }
 
-/** The first few names, in words: "Google Drive, Gmail, Google Calendar and 21 more". Empty for a single endpoint, whose name is in the title. */
+/** The first few names, in words: "TeamZ Drive, TeamZ Mail, TeamZ Calendar and 21 more". Empty for a single endpoint, whose name is in the title. */
 export function probeNames(endpoints: Named[], shown = 3): string {
   if (endpoints.length < 2) return '';
   const names = endpoints.slice(0, shown).map(displayName);

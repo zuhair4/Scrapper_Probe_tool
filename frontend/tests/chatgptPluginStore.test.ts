@@ -40,7 +40,7 @@ const HOME = {
     {
       id: 'featured', url_slug: 'featured', title: 'Popular', description: 'A curated selection.',
       plugins: [
-        { id: 'plugin_connector_1p_ab21a553bfbc81919ea8fd1858e3ffa7', canonical_app_id: 'connector_5f3c8c41a1e54ad7a76272c89e2554fa', display_name: 'Google Drive', short_description: 'Drive, Docs, Sheets or Slides', keywords: ['google-drive', 'docs'], icon_url: 'https://files.openai.com/content?id=file_y', status: 'ENABLED', installation_policy: 'AVAILABLE', eligible_plan_types: ['plus', 'pro'] },
+        { id: 'plugin_connector_1p_ab21a553bfbc81919ea8fd1858e3ffa7', canonical_app_id: 'connector_5f3c8c41a1e54ad7a76272c89e2554fa', display_name: 'TeamZ Drive', short_description: 'Drive, Docs, Sheets or Slides', keywords: ['teamz-drive', 'docs'], icon_url: 'https://files.openai.com/content?id=file_y', status: 'ENABLED', installation_policy: 'AVAILABLE', eligible_plan_types: ['plus', 'pro'] },
         canva,
       ],
     },
@@ -104,10 +104,10 @@ describe('home (real shape)', () => {
     const map = new Map<string, PsPlugin>();
     ingestHome(map, HOME);
     expect(map.get('plugin_connector_1p_ab21a553bfbc81919ea8fd1858e3ffa7')).toMatchObject({
-      name: 'Google Drive',
+      name: 'TeamZ Drive',
       description: 'Drive, Docs, Sheets or Slides',
       appId: 'connector_5f3c8c41a1e54ad7a76272c89e2554fa',
-      keywords: 'google-drive; docs',
+      keywords: 'teamz-drive; docs',
       plans: 'plus; pro',
       status: 'ENABLED',
       installationPolicy: 'AVAILABLE',
