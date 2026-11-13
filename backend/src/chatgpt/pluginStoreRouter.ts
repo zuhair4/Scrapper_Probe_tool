@@ -110,9 +110,15 @@ export function describeFailure(status: number, body: string): string {
   return `HTTP ${status} from chatgpt.com.`;
 }
 
-/** Only this machine may use the proxy. */
+/** Only this machine may use the proxy, unless running in production or ALLOW_REMOTE is set. */
 const localOnly: express.RequestHandler = (req, res, next) => {
-  if (LOOPBACK.has(req.socket.remoteAddress ?? '')) return next();
+  if (
+    process.env.NODE_ENV === 'production' ||
+    process.env.ALLOW_REMOTE === 'true' ||
+    LOOPBACK.has(req.socket.remoteAddress ?? '')
+  ) {
+    return next();
+  }
   res.status(403).json({ error: 'Local access only' });
 };
 

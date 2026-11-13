@@ -8,6 +8,7 @@
     "dev:server": "tsx watch backend/src/index.ts",
     "dev:client": "vite frontend",
     "build": "tsc -p backend/tsconfig.json && vite build frontend",
+    "start": "node dist/backend/index.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview frontend"
@@ -35,5 +36,8 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.8",
     "vitest": "^1.0.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
