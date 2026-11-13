@@ -1,4 +1,4 @@
-﻿Name,Publisher,Tier,Why not probeable,Allowed hosts,URL pattern (regex),Path prefix,Documentation,Directory ID
+Name,Publisher,Tier,Why not probeable,Allowed hosts,URL pattern (regex),Path prefix,Documentation,Directory ID
 ActiveCampaign,ActiveCampaign,partner,Host list (user-provided),activehosted.com; *.activehosted.com,,,https://developers.activecampaign.com/page/mcp,plugin_01NUuBgHGquDc2BCQmbwn4Tw
 Apify,Apify,partner,No endpoint details in directory,,,,https://docs.apify.com/platform/integrations/mcp,plugin_01EpxPUmNagfuyG3PXD195vD
 ApyHub,ApyHub,community,No endpoint details in directory,,,,https://apyhub.com/mcp,plugin_019LzPLnN8m36PRaYVfoBqzX
